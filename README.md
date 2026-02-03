@@ -65,16 +65,16 @@ The API server will be running at `http://localhost:5000`.
 ### Production
 
 ```shell
-uv run hypercorn --bind 0.0.0.0:13568 launcher:app # or make run-prod
+uv run hypercorn --bind 0.0.0.0:17568 launcher:app # or make run-prod
 ```
 
 or if you want to enable SSL support
 
 ```shell
-uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:13568 launcher:app # or make run-prod-ssl
+uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:17568 launcher:app # or make run-prod-ssl
 ```
 
-The API server will be running at `http://localhost:13568`. The certificate and key files are required for SSL support.
+The API server will be running at `http://localhost:17568`. The certificate and key files are required for SSL support.
 
 ## License
 
