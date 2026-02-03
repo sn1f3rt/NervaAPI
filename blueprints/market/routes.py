@@ -12,154 +12,146 @@ from . import market_bp
 MarketData = Dict[str, Union[str, Dict[str, Any]]]
 
 
-@market_bp.route("/market/tradeogre")
-async def _market_tradeogre() -> tuple[Response, int]:
-    market_data: MarketData = {
-        "status": "success",
-        "exchange": "TradeOgre",
-        "pairs": current_app.config.get("TRADEOGRE_MARKET_PAIRS", []),
-        "result": {},
+def _fmt_btc(value: float) -> str:
+    return f"{round(value * 100_000_000)} sat"
+
+
+def _fmt_usd(value: float, precision: int = 4) -> str:
+    return f"${round(value, precision)}"
+
+
+def _fmt_native(value: float, symbol: str, precision: int = 8) -> str:
+    return f"{round(value, precision)} {symbol}"
+
+
+async def _fetch_nonkyc() -> Dict[str, Any]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://api.nonkyc.io/api/v2/market/getlist") as res:
+            data = await res.json()
+
+    return {
+        m["symbol"].replace("/", "-"): m
+        for m in data
+        if m.get("isActive") and not m.get("apiExcluded")
     }
 
-    for pair in market_data["pairs"]:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://tradeogre.com/api/v1/ticker/{pair.lower()}"
-            ) as res:
-                data: Dict[str, Any] = await res.json(content_type=None)
 
-                if "error" in data:
-                    market_data["result"].update(
-                        {
-                            pair: {
-                                "error": data["error"],
-                            }
-                        }
-                    )
+@market_bp.route("/market/nonkyc")
+async def _market_nonkyc() -> tuple[Response, int]:
+    pairs = current_app.config.get("NONKYC_MARKET_PAIRS", [])
+    markets = await _fetch_nonkyc()
 
-                else:
-                    last_price: str
-                    bid: str
-                    ask: str
-                    volume: str
-                    high: str
-                    low: str
+    result: Dict[str, Any] = {}
 
-                    if pair.endswith("BTC"):
-                        last_price = (
-                            f"{round(float(data['price']) * 100_000_000)} sat"
-                        )
-                        bid = f"{round(float(data['bid']) * 100_000_000)} sat"
-                        ask = f"{round(float(data['ask']) * 100_000_000)} sat"
-                        volume = f"{float(data['volume'])} BTC"
-                        high = f"{round(float(data['high']) * 100_000_000)} sat"
-                        low = f"{round(float(data['low']) * 100_000_000)} sat"
+    for pair in pairs:
+        data = markets.get(pair)
+        if not data:
+            result[pair] = {"error": "pair not found"}
+            continue
 
-                    else:
-                        last_price = f"${round(float(data['price']), 4)}"
-                        bid = f"${round(float(data['bid']), 4)}"
-                        ask = f"${round(float(data['ask']), 4)}"
-                        volume = f"${round(float(data['volume']), 2)}"
-                        high = f"${round(float(data['high']), 4)}"
-                        low = f"${round(float(data['low']), 4)}"
+        quote = pair.split("-")[1]
+        last_trade = datetime.fromtimestamp(data["lastTradeAt"] // 1000).isoformat()
 
-                    market_data["result"].update(
-                        {
-                            pair: {
-                                "last_price": last_price,
-                                "bid": bid,
-                                "ask": ask,
-                                "volume": volume,
-                                "high": high,
-                                "low": low,
-                            }
-                        }
-                    )
+        if quote == "BTC":
+            result[pair] = {
+                "last_price": _fmt_btc(float(data["lastPrice"])),
+                "bid": _fmt_btc(float(data["bestBid"])),
+                "ask": _fmt_btc(float(data["bestAsk"])),
+                "volume": f"{float(data['volumeSecondary'])} BTC",
+                "high": _fmt_btc(float(data["highPrice"])),
+                "low": _fmt_btc(float(data["lowPrice"])),
+                "last_trade": last_trade,
+            }
 
-    return jsonify(market_data), 200
+        elif quote in {"USDT", "USDC"}:
+            result[pair] = {
+                "last_price": _fmt_usd(float(data["lastPrice"])),
+                "bid": _fmt_usd(float(data["bestBid"])),
+                "ask": _fmt_usd(float(data["bestAsk"])),
+                "volume": _fmt_usd(float(data["volumeSecondary"]), 2),
+                "high": _fmt_usd(float(data["highPrice"])),
+                "low": _fmt_usd(float(data["lowPrice"])),
+                "last_trade": last_trade,
+            }
+
+        else:
+            result[pair] = {
+                "last_price": _fmt_native(float(data["lastPrice"]), quote),
+                "bid": _fmt_native(float(data["bestBid"]), quote),
+                "ask": _fmt_native(float(data["bestAsk"]), quote),
+                "volume": f"{float(data['volumeSecondary'])} {quote}",
+                "high": _fmt_native(float(data["highPrice"]), quote),
+                "low": _fmt_native(float(data["lowPrice"]), quote),
+                "last_trade": last_trade,
+            }
+
+    return jsonify(
+        {
+            "status": "success",
+            "exchange": "NonKYC",
+            "pairs": pairs,
+            "result": result,
+        }
+    ), 200
 
 
-@market_bp.route("/market/xeggex")
-async def _market_xeggex() -> tuple[Response, int]:
-    market_data: MarketData = {
-        "status": "success",
-        "exchange": "XeggeX",
-        "pairs": current_app.config.get("XEGGEX_MARKET_PAIRS", []),
-        "result": {},
-    }
+async def _fetch_cexswap() -> Dict[str, Any]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            "https://cexswap.cc/api/public/markets/summary"
+        ) as res:
+            payload = await res.json()
 
-    for pair in market_data["pairs"]:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://api.xeggex.com/api/v2/market/getbysymbol/{pair.replace('-', '_')}"
-            ) as res:
-                data: Dict[str, Any] = await res.json()
+    return {m["pair"]: m for m in payload.get("items", [])}
 
-                if "error" in data:
-                    market_data["result"].update(
-                        {
-                            pair: {
-                                "error": data["error"],
-                            }
-                        }
-                    )
 
-                else:
-                    last_price: str
-                    bid: str
-                    ask: str
-                    volume: str
-                    high: str
-                    low: str
-                    last_trade: str
+@market_bp.route("/market/cexswap")
+async def _market_cexswap() -> tuple[Response, int]:
+    pairs = current_app.config.get("CEXSWAP_MARKET_PAIRS", [])
+    markets = await _fetch_cexswap()
 
-                    if pair.endswith("BTC"):
-                        last_price = (
-                            f"{round(float(data['lastPrice']) * 100_000_000)} sat"
-                        )
-                        bid = f"{round(float(data['bestBid']) * 100_000_000)} sat"
-                        ask = f"{round(float(data['bestAsk']) * 100_000_000)} sat"
-                        volume = f"{float(data['volumeSecondary'])} BTC"
-                        high = f"{round(float(data['highPrice']) * 100_000_000)} sat"
-                        low = f"{round(float(data['lowPrice']) * 100_000_000)} sat"
-                        last_trade = datetime.fromtimestamp(
-                            data["lastTradeAt"] // 1000
-                        ).isoformat()
+    result: Dict[str, Any] = {}
 
-                    elif pair.endswith("USDT") or pair.endswith("USDC"):
-                        last_price = f"${round(float(data['lastPrice']), 4)}"
-                        bid = f"${round(float(data['bestBid']), 4)}"
-                        ask = f"${round(float(data['bestAsk']), 4)}"
-                        volume = f"${round(float(data['volumeSecondary']), 2)}"
-                        high = f"${round(float(data['highPrice']), 4)}"
-                        low = f"${round(float(data['lowPrice']), 4)}"
-                        last_trade = datetime.fromtimestamp(
-                            data["lastTradeAt"] // 1000
-                        ).isoformat()
+    for pair in pairs:
+        data = markets.get(pair)
+        if not data:
+            result[pair] = {"error": "pair not found"}
+            continue
 
-                    else:
-                        last_price = f"{round(float(data['lastPrice']), 4)} XPE"
-                        bid = f"{round(float(data['bestBid']), 4)} XPE"
-                        ask = f"{round(float(data['bestAsk']), 4)} XPE"
-                        volume = f"{float(data['volumeSecondary'])} XPE"
-                        high = f"{round(float(data['highPrice']), 4)} XPE"
-                        low = f"{round(float(data['lowPrice']), 4)} XPE"
-                        last_trade = datetime.fromtimestamp(
-                            data["lastTradeAt"] // 1000
-                        ).isoformat()
+        quote = data["quote"]
 
-                    market_data["result"].update(
-                        {
-                            pair: {
-                                "last_price": last_price,
-                                "bid": bid,
-                                "ask": ask,
-                                "volume": volume,
-                                "high": high,
-                                "low": low,
-                                "last_trade": last_trade,
-                            }
-                        }
-                    )
+        if quote == "BTC":
+            result[pair] = {
+                "last_price": _fmt_btc(float(data["last"])),
+                "volume": f"{float(data['volume24h'])} BTC",
+                "high": _fmt_btc(float(data["high24h"])),
+                "low": _fmt_btc(float(data["low24h"])),
+                "change_24h_pct": f"{round(float(data['change24h_pct']), 2)}%",
+            }
 
-    return jsonify(market_data), 200
+        elif quote in {"USDT", "USDC"}:
+            result[pair] = {
+                "last_price": _fmt_usd(float(data["last"])),
+                "volume": _fmt_usd(float(data["volume24h_usd"]), 2),
+                "high": _fmt_usd(float(data["high24h"])),
+                "low": _fmt_usd(float(data["low24h"])),
+                "change_24h_pct": f"{round(float(data['change24h_pct']), 2)}%",
+            }
+
+        else:
+            result[pair] = {
+                "last_price": _fmt_native(float(data["last"]), quote),
+                "volume": f"{float(data['volume24h'])} {quote}",
+                "high": _fmt_native(float(data["high24h"]), quote),
+                "low": _fmt_native(float(data["low24h"]), quote),
+                "change_24h_pct": f"{round(float(data['change24h_pct']), 2)}%",
+            }
+
+    return jsonify(
+        {
+            "status": "success",
+            "exchange": "CexSwap",
+            "pairs": pairs,
+            "result": result,
+        }
+    ), 200
