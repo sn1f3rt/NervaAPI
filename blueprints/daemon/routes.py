@@ -6,14 +6,14 @@ from nerva import utils
 from quart import Response, jsonify, request
 from validators import ip_address
 
-from factory import daemon_other, daemon_json_rpc
+from factory import daemon, daemon_legacy
 
 from . import daemon_bp
 
 
 @daemon_bp.route("/daemon/get_version", methods=["GET"])
 async def _daemon_get_version() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.get_version()
+    data: Dict[str, Any] = await daemon.get_version()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -23,7 +23,7 @@ async def _daemon_get_version() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_info", methods=["GET"])
 async def _daemon_get_info() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.get_info()
+    data: Dict[str, Any] = await daemon.get_info()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -33,7 +33,7 @@ async def _daemon_get_info() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/hard_fork_info", methods=["GET"])
 async def _daemon_hard_fork_info() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.hard_fork_info()
+    data: Dict[str, Any] = await daemon.hard_fork_info()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -70,11 +70,11 @@ async def _daemon_get_block() -> tuple[Response, int]:
 
     data: Dict[str, Any]
     if block_hash:
-        data = await daemon_json_rpc.get_block(block_hash=block_hash)
+        data = await daemon.get_block(block_hash=block_hash)
 
     else:
         try:
-            data = await daemon_json_rpc.get_block(height=int(height))  # type: ignore
+            data = await daemon.get_block(height=int(height))  # type: ignore
 
         except ValueError:
             return jsonify({"status": "error", "error": "Invalid block height"}), 400
@@ -87,7 +87,7 @@ async def _daemon_get_block() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block_count", methods=["GET"])
 async def _daemon_get_block_count() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.get_block_count()
+    data: Dict[str, Any] = await daemon.get_block_count()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -97,7 +97,7 @@ async def _daemon_get_block_count() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_last_block_header", methods=["GET"])
 async def _daemon_get_last_block_header() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.get_last_block_header()
+    data: Dict[str, Any] = await daemon.get_last_block_header()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -115,7 +115,7 @@ async def _daemon_get_block_header_by_hash() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any] = await daemon_json_rpc.get_block_header_by_hash(
+    data: Dict[str, Any] = await daemon.get_block_header_by_hash(
         block_hash=block_hash
     )
 
@@ -136,7 +136,7 @@ async def _daemon_get_block_header_by_height() -> tuple[Response, int]:
         )
 
     try:
-        data: Dict[str, Any] = await daemon_json_rpc.get_block_header_by_height(
+        data: Dict[str, Any] = await daemon.get_block_header_by_height(
             height=int(height)
         )  # type: ignore
 
@@ -166,7 +166,7 @@ async def _daemon_get_block_headers_range() -> tuple[Response, int]:
         )
 
     try:
-        data: Dict[str, Any] = await daemon_json_rpc.get_block_headers_range(
+        data: Dict[str, Any] = await daemon.get_block_headers_range(
             start_height=int(start_height),  # type: ignore
             end_height=int(end_height),  # type: ignore
         )
@@ -186,7 +186,7 @@ async def _daemon_get_block_template() -> tuple[Response, int]:
     reserve: Optional[str] = request.args.get("reserve", None)
 
     try:
-        data: Dict[str, Any] = await daemon_json_rpc.get_block_template(
+        data: Dict[str, Any] = await daemon.get_block_template(
             wallet_address=address,
             reserve_size=int(reserve),  # type: ignore
         )
@@ -202,7 +202,7 @@ async def _daemon_get_block_template() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_connections", methods=["GET"])
 async def _daemon_get_connections() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.get_connections()
+    data: Dict[str, Any] = await daemon.get_connections()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -216,13 +216,11 @@ async def _daemon_get_fee_estimate() -> tuple[Response, int]:
 
     data: Dict[str, Any]
     if not grace_blocks:
-        data = await daemon_json_rpc.get_fee_estimate()
+        data = await daemon.get_fee_estimate()
 
     else:
         try:
-            data = await daemon_json_rpc.get_fee_estimate(
-                grace_blocks=int(grace_blocks)
-            )  # type: ignore
+            data = await daemon.get_fee_estimate(grace_blocks=int(grace_blocks))  # type: ignore
 
         except (TypeError, ValueError):
             return jsonify({"status": "error", "error": "Invalid grace blocks"}), 400
@@ -239,9 +237,7 @@ async def _daemon_get_generated_coins() -> tuple[Response, int]:
     checkpoint_total_coins: float = 18869659.7794
     reward_per_block: float = 0.3
 
-    current_block_number: int = (await daemon_json_rpc.get_block_count())["result"][
-        "count"
-    ]
+    current_block_number: int = (await daemon.get_block_count())["result"]["count"]
 
     block_diff: int = current_block_number - checkpoint_block_number
     generated_coins: float = checkpoint_total_coins + (block_diff * reward_per_block)
@@ -251,7 +247,7 @@ async def _daemon_get_generated_coins() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_bans", methods=["GET"])
 async def _daemon_get_bans() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_json_rpc.get_bans()
+    data: Dict[str, Any] = await daemon.get_bans()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -304,7 +300,7 @@ async def _daemon_set_bans() -> tuple[Response, int]:
     ban_status: bool = True if ban == "true" else False
     seconds: int = utils.calculate_seconds_from_time_string(time)
 
-    data = await daemon_json_rpc.set_bans(
+    data = await daemon.set_bans(
         [{"host": host, "ban": ban_status, "seconds": seconds}]
     )
 
@@ -316,7 +312,7 @@ async def _daemon_set_bans() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_transaction_pool", methods=["GET"])
 async def _daemon_get_transaction_pool() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_other.get_transaction_pool()
+    data: Dict[str, Any] = await daemon_legacy.get_transaction_pool()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -338,7 +334,7 @@ async def _daemon_get_transaction_pool() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_transaction_pool_stats", methods=["GET"])
 async def _daemon_get_transaction_pool_stats() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_other.get_transaction_pool_stats()
+    data: Dict[str, Any] = await daemon_legacy.get_transaction_pool_stats()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -372,7 +368,7 @@ async def _daemon_get_transactions() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any] = await daemon_other.get_transactions(
+    data: Dict[str, Any] = await daemon_legacy.get_transactions(
         txs_hashes=hashes, decode_as_json=decode_as_json, prune=prune, split=split
     )
 
@@ -437,7 +433,7 @@ async def _daemon_decode_outputs() -> tuple[Response, int]:
     ):
         return jsonify({"status": "error", "error": "Invalid data type"}), 400
 
-    result_data: Dict[str, Any] = await daemon_json_rpc.decode_outputs(
+    result_data: Dict[str, Any] = await daemon.decode_outputs(
         tx_hashes=hashes, address=address, sec_view_key=view_key
     )
 
@@ -457,7 +453,7 @@ async def _daemon_get_transaction_pubkey() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any] = await daemon_json_rpc.get_tx_pubkey(extra=extra)
+    data: Dict[str, Any] = await daemon.get_tx_pubkey(extra=extra)
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400

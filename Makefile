@@ -4,27 +4,31 @@ env:
 rmenv:
 	rm -rf .venv
 
-activate:
-	source .venv/bin/activate
-
-install:
-	uv sync --no-dev
+install: install-prod
 
 install-dev:
-	uv sync --extra dev
+	uv sync --all-extras
 
-install-extras:
+install-prod:
 	uv sync --all-extras --no-dev
 
-dev:
+run: run-dev
+
+run-dev:
 	uv run launcher.py
 
-prod:
-	hypercorn --bind 0.0.0.0:13030 --certfile cert.pem --keyfile key.pem launcher:app
+run-prod:
+	uv run hypercorn --bind 0.0.0.0:13568 launcher:app
+
+run-prod-ssl:
+	uv run hypercorn --bind 0.0.0.0:13568 --certfile cert.pem --keyfile key.pem launcher:app
 
 format:
-	ruff check --select I --fix .
+	ruff check --fix .
 	ruff format .
 
-.PHONY: env rmenv activate install install-dev dev prod format
-.DEFAULT_GOAL := dev
+clean:
+	rm -f logs/*.log
+
+.PHONY: env rmenv install install-dev install-prod run run-dev run-prod run-prod-ssl format clean
+.DEFAULT_GOAL := run

@@ -5,12 +5,12 @@ from logging.config import dictConfig
 import aiohttp
 import schedule
 import motor.motor_asyncio
-from nerva import daemon
 from quart import Quart, Response, jsonify
+from nerva.daemon import Daemon, DaemonLegacy
 from quart_rate_limiter import limit_blueprint
 
-daemon_json_rpc: daemon.DaemonJSONRPC
-daemon_other: daemon.DaemonOther
+daemon: Daemon
+daemon_legacy: DaemonLegacy
 
 db: motor.motor_asyncio.AsyncIOMotorDatabase
 
@@ -62,13 +62,13 @@ def create_app() -> Quart:
     app: Quart = Quart(__name__, static_url_path="/assets", static_folder="assets")
     app.config.from_pyfile("config.py")
 
-    global daemon_json_rpc, daemon_other
-    daemon_json_rpc = daemon.DaemonJSONRPC(
+    global daemon, daemon_legacy
+    daemon = Daemon(
         host=app.config["DAEMON_RPC_HOST"],
         port=app.config["DAEMON_RPC_PORT"],
         ssl=app.config["DAEMON_RPC_SSL"],
     )
-    daemon_other = daemon.DaemonOther(
+    daemon_legacy = DaemonLegacy(
         host=app.config["DAEMON_RPC_HOST"],
         port=app.config["DAEMON_RPC_PORT"],
         ssl=app.config["DAEMON_RPC_SSL"],

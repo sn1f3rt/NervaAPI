@@ -1,7 +1,6 @@
 # NervaAPI
 
 [![Ruff](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/ruff.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/ruff.yml)
-[![License](https://img.shields.io/github/license/Sn1F3rt/NervaAPI)](LICENSE)
 
 ## Table of Contents
 
@@ -19,36 +18,34 @@ NervaAPI is a RESTful API server for the Nerva blockchain. It provides a simple 
 ## Prerequisites
 
 - Git
-- Python >= 3.8
-- MongoDB database
+- Python >= 3.10
+- MongoDB database- [`uv` package manager](https://docs.astral.sh/uv/getting-started/installation/)
 - [make](https://www.gnu.org/software/make/) (optional)
 
 ## Installation
 
-1. Install [`uv`](https://docs.astral.sh/uv/) > https://docs.astral.sh/uv/getting-started/installation/
-
-2. Clone the repository
+1. Clone the repository
 
    ```shell
     git clone https://github.com/Sn1F3rt/NervaAPI.git
    ```
    
-3. Switch to the project directory
+2. Switch to the project directory
 
    ```shell
     cd NervaAPI
    ```
    
-4. Create a virtual environment
+3. Create a virtual environment
 
    ```shell
    uv venv # or make env
    ```
    
-5. Install dependencies
+4. Install dependencies
 
    ```shell
-    uv sync --no-dev # or make install
+    uv sync --all-extras --no-dev # or make install
    ```
 
 ## Configuration
@@ -60,29 +57,27 @@ Copy the [`config.example.py`](config.example.py) file to `config.py` and update
 ### Development
 
 ```shell
-uv run launcher.py # or make dev
+uv run launcher.py # or make run
 ```
 
-The API server will be running at `http://localhost:8000`.
+The API server will be running at `http://localhost:5000`.
 
 ### Production
 
 ```shell
-source .venv/bin/activate # or make activate
-hypercorn --bind 0.0.0.0:8000 launcher:app
+uv run hypercorn --bind 0.0.0.0:13568 launcher:app # or make run-prod
 ```
 
 or if you want to enable SSL support
 
 ```shell
-source .venv/bin/activate # or make activate
-hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:8000 launcher:app
+uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:13568 launcher:app # or make run-prod-ssl
 ```
 
-The API server will be running at `http://localhost:8000`. The certificate and key files are required for SSL support.
+The API server will be running at `http://localhost:13568`. The certificate and key files are required for SSL support.
 
 ## License
 
-[GNU General Public License v3.0](LICENSE)
+[![License](https://img.shields.io/github/license/sn1f3rt/NervaAPI)](LICENSE)
 
-Copyright &copy; 2024 [Sayan "Sn1F3rt" Bhattacharyya](https://sn1f3rt.dev), [The Nerva Project](https://nerva.one)
+Copyright &copy; 2024-present [Sayan "sn1f3rt" Bhattacharyya](https://sn1f3rt.dev), [The Nerva Project](https://nerva.one)

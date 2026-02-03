@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("year").textContent = new Date().getFullYear();
+});
+
 function openEndpoint(endpoint) {
     window.open(endpoint, '_blank');
 }
