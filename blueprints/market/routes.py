@@ -155,3 +155,127 @@ async def _market_cexswap() -> tuple[Response, int]:
             "result": result,
         }
     ), 200
+
+
+async def _fetch_noirtrade() -> Dict[str, Any]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://noirtrade.com/api/v1/tickers") as res:
+            data = await res.json()
+
+    return {t["ticker_id"]: t for t in data}
+
+
+@market_bp.route("/market/noirtrade")
+async def _market_noirtrade() -> tuple[Response, int]:
+    pairs = current_app.config.get("NOIRTRADE_MARKET_PAIRS", [])
+    markets = await _fetch_noirtrade()
+
+    result: Dict[str, Any] = {}
+
+    for pair in pairs:
+        data = markets.get(pair)
+        if not data:
+            result[pair] = {"error": "pair not found"}
+            continue
+
+        quote = pair.split("_")[1]
+
+        if quote == "BTC":
+            result[pair] = {
+                "last_price": _fmt_btc(float(data["last_price"])),
+                "bid": _fmt_btc(float(data["bid"])),
+                "ask": _fmt_btc(float(data["ask"])),
+                "volume": f"{float(data['target_volume'])} BTC",
+                "high": _fmt_btc(float(data["high"])),
+                "low": _fmt_btc(float(data["low"])),
+            }
+
+        elif quote.startswith(
+            ("USDT", "USDC")
+        ):  # startswith covers chain-suffixed variants like USDT0
+            result[pair] = {
+                "last_price": _fmt_usd(float(data["last_price"])),
+                "bid": _fmt_usd(float(data["bid"])),
+                "ask": _fmt_usd(float(data["ask"])),
+                "volume": _fmt_usd(float(data["target_volume"]), 2),
+                "high": _fmt_usd(float(data["high"])),
+                "low": _fmt_usd(float(data["low"])),
+            }
+
+        else:
+            result[pair] = {
+                "last_price": _fmt_native(float(data["last_price"]), quote),
+                "bid": _fmt_native(float(data["bid"]), quote),
+                "ask": _fmt_native(float(data["ask"]), quote),
+                "volume": f"{float(data['target_volume'])} {quote}",
+                "high": _fmt_native(float(data["high"]), quote),
+                "low": _fmt_native(float(data["low"]), quote),
+            }
+
+    return jsonify(
+        {
+            "status": "success",
+            "exchange": "NoirTrade",
+            "pairs": pairs,
+            "result": result,
+        }
+    ), 200
+
+
+async def _fetch_klingex() -> Dict[str, Any]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://api.klingex.io/api/markets") as res:
+            data = await res.json()
+
+    return {
+        f"{m['base_asset_symbol']}-{m['quote_asset_symbol']}": m
+        for m in data
+        if m.get("is_active")
+    }
+
+
+@market_bp.route("/market/klingex")
+async def _market_klingex() -> tuple[Response, int]:
+    pairs = current_app.config.get("KLINGEX_MARKET_PAIRS", [])
+    markets = await _fetch_klingex()
+
+    result: Dict[str, Any] = {}
+
+    for pair in pairs:
+        data = markets.get(pair)
+        if not data:
+            result[pair] = {"error": "pair not found"}
+            continue
+
+        quote = pair.split("-")[1]
+        raw_price = float(data["last_price"]) / (10 ** data["price_decimals"])
+
+        if quote == "BTC":
+            result[pair] = {
+                "last_price": _fmt_btc(raw_price),
+                "volume": data["volume_24h_human"],
+                "change_24h_pct": f"{round(float(data['priceChange24h']), 2)}%",
+            }
+
+        elif quote in {"USDT", "USDC"}:
+            result[pair] = {
+                "last_price": _fmt_usd(raw_price),
+                "volume": data["volume_24h_human"],
+                "change_24h_pct": f"{round(float(data['priceChange24h']), 2)}%",
+            }
+
+        else:
+            result[pair] = {
+                "last_price": _fmt_native(raw_price, quote),
+                "volume": data["volume_24h_human"],
+                "change_24h_pct": f"{round(float(data['priceChange24h']), 2)}%",
+            }
+
+    return jsonify(
+        {
+            "status": "success",
+            "exchange": "KlingEx",
+            "pairs": pairs,
+            "result": result,
+        }
+    ), 200
