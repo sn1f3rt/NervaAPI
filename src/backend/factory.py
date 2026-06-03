@@ -144,4 +144,9 @@ def create_app() -> Quart:
 
     app.register_blueprint(api_bp)
 
+    @app.before_serving
+    async def _start_scheduler() -> None:
+        setup_schedule()
+        app.add_background_task(schedule_task)
+
     return app

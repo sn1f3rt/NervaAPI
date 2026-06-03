@@ -9,7 +9,7 @@ install-prod:
 run: run-dev
 
 run-dev:
-	uv run python -m backend.launcher
+	uv run hypercorn --reload --bind 127.0.0.1:8080 backend.launcher:app
 
 run-prod:
 	uv run hypercorn --bind 0.0.0.0:17568 backend.launcher:app

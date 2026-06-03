@@ -65,10 +65,10 @@ Copy the [`config.example.py`](src/backend/config.example.py) file to `src/backe
 ### Development
 
 ```shell
-uv run python -m backend.launcher # or make run
+uv run hypercorn --reload --bind 127.0.0.1:8080 backend.launcher:app # or make run
 ```
 
-The API server will be running at `http://localhost:8080`.
+The API server will be running at `http://127.0.0.1:8080`, reloading on changes.
 
 ### Production
 
