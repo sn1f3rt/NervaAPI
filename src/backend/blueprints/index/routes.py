@@ -3,7 +3,7 @@ from importlib.metadata import (
     version as pkg_version,
 )
 
-from quart import Response, jsonify, current_app
+from quart import Response, jsonify
 from quart_rate_limiter import rate_exempt
 
 from . import index_bp
@@ -22,6 +22,5 @@ async def _index() -> tuple[Response, int]:
             "name": "NervaAPI",
             "version": API_VERSION,
             "status": "ok",
-            "docs": current_app.config["DOCS_URL"],
         }
     ), 200

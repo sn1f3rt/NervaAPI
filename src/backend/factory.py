@@ -4,7 +4,6 @@ import asyncio
 from datetime import timedelta
 from logging.config import dictConfig
 
-import aiohttp
 import schedule
 import motor.motor_asyncio
 from nerva import DaemonRPC, DaemonHTTP
@@ -17,7 +16,7 @@ daemon_legacy: DaemonHTTP
 
 db: motor.motor_asyncio.AsyncIOMotorDatabase[dict[str, Any]]
 
-prune_url: str = "http://localhost:8080/v1/analytics/prune"
+analytics_enabled: bool = False
 
 
 dictConfig(
@@ -52,9 +51,12 @@ async def schedule_task() -> None:
 
 
 async def prune_analytics() -> None:
-    async with aiohttp.ClientSession() as session:
-        async with session.delete(prune_url):
-            pass
+    if not analytics_enabled:
+        return
+
+    from backend.blueprints.analytics.routes import prune_stale_analytics
+
+    await prune_stale_analytics()
 
 
 def setup_schedule() -> None:
@@ -75,8 +77,8 @@ def create_app() -> Quart:
 
     RateLimiter(app, key_function=_rate_limit_key)
 
-    global prune_url
-    prune_url = app.config["INTERNAL_PRUNE_URL"]
+    global analytics_enabled
+    analytics_enabled = app.config["ANALYTICS_ENABLED"]
 
     global daemon, daemon_legacy
     daemon = DaemonRPC(

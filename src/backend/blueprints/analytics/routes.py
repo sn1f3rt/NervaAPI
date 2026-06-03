@@ -115,18 +115,21 @@ async def _analytics_submit() -> tuple[Response, int]:
         return jsonify({"status": "error", "message": str(e)}), 400
 
 
+async def prune_stale_analytics() -> None:
+    collection = db.get_collection("analytics")
+
+    async for document in collection.find():
+        if (datetime.now() - document["last_updated"]).days > 7:
+            await collection.delete_one({"ip": document["ip"]})
+
+
 @analytics_bp.route("/analytics/prune", methods=["DELETE"])
 async def _analytics_prune() -> tuple[Response, int]:
     if not current_app.config["ANALYTICS_ENABLED"]:
         return jsonify({"status": "error", "message": "Analytics is disabled"}), 400
 
     try:
-        collection = db.get_collection("analytics")
-
-        async for document in collection.find():
-            if (datetime.now() - document["last_updated"]).days > 7:
-                await collection.delete_one({"ip": document["ip"]})
-
+        await prune_stale_analytics()
         return jsonify({"status": "success"}), 200
 
     except Exception as e:

@@ -79,18 +79,10 @@ KLINGEX_MARKET_PAIRS = ["XNV-USDT"]
 # Server
 """
 CORS_ALLOW_ORIGIN controls which browser origins may call the API.
-Set it to the deployed frontend/docs origin in production
-(e.g. "https://docs.nerva.one"), or "*" to allow any origin.
-
-DOCS_URL is advertised at the API root (GET /) so clients can find the docs.
-
-INTERNAL_PRUNE_URL is the URL the daily scheduler calls to prune stale
-analytics records. It should point at this API's own /analytics/prune endpoint.
+Set it to your public origin in production, or "*" to allow any origin.
 """
 
 CORS_ALLOW_ORIGIN = "*"
-DOCS_URL = "https://docs.nerva.one"
-INTERNAL_PRUNE_URL = "http://localhost:8080/v1/analytics/prune"
 
 # Rate limiting
 """
