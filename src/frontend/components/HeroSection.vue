@@ -27,7 +27,7 @@ const version = API_SPEC.meta.version
       </div>
       <div class="fact">
         <div class="fact__k">Rate limit</div>
-        <div class="fact__v">60 <small>req / min</small></div>
+        <div class="fact__v">120 <small>req / min</small></div>
       </div>
       <div class="fact">
         <div class="fact__k">Auth</div>

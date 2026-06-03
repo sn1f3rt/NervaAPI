@@ -91,3 +91,12 @@ analytics records. It should point at this API's own /analytics/prune endpoint.
 CORS_ALLOW_ORIGIN = "*"
 DOCS_URL = "https://docs.nerva.one"
 INTERNAL_PRUNE_URL = "http://localhost:8080/v1/analytics/prune"
+
+# Rate limiting
+"""
+RATE_LIMIT_COUNT requests are allowed per RATE_LIMIT_PERIOD seconds, per client
+IP and per category (daemon, market, analytics).
+"""
+
+RATE_LIMIT_COUNT = 120
+RATE_LIMIT_PERIOD = 60

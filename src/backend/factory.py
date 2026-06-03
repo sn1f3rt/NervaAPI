@@ -8,16 +8,16 @@ import aiohttp
 import schedule
 import motor.motor_asyncio
 from nerva import DaemonRPC, DaemonHTTP
-from quart import Quart, Response, jsonify
+from quart import Quart, Response, jsonify, request
 from quart_cors import cors
-from quart_rate_limiter import limit_blueprint
+from quart_rate_limiter import RateLimiter, limit_blueprint
 
 daemon: DaemonRPC
 daemon_legacy: DaemonHTTP
 
 db: motor.motor_asyncio.AsyncIOMotorDatabase[dict[str, Any]]
 
-prune_url: str = "http://localhost:5000/analytics/prune"
+prune_url: str = "http://localhost:8080/v1/analytics/prune"
 
 
 dictConfig(
@@ -63,11 +63,17 @@ def setup_schedule() -> None:
     )
 
 
+async def _rate_limit_key() -> str:
+    return request.headers.get("CF-Connecting-IP") or request.access_route[0]
+
+
 def create_app() -> Quart:
     app: Quart = Quart(__name__, static_folder=None)
     app.config.from_pyfile("config.py")
 
     app = cors(app, allow_origin=app.config["CORS_ALLOW_ORIGIN"])
+
+    RateLimiter(app, key_function=_rate_limit_key)
 
     global prune_url
     prune_url = app.config["INTERNAL_PRUNE_URL"]
@@ -126,10 +132,13 @@ def create_app() -> Quart:
         analytics_bp,
     )
 
-    limit_blueprint(analytics_bp, 60, timedelta(seconds=60))
-    limit_blueprint(daemon_bp, 60, timedelta(seconds=60))
-    limit_blueprint(index_bp, 60, timedelta(seconds=60))
-    limit_blueprint(market_bp, 60, timedelta(seconds=60))
+    count: int = app.config["RATE_LIMIT_COUNT"]
+    period: timedelta = timedelta(seconds=app.config["RATE_LIMIT_PERIOD"])
+
+    limit_blueprint(analytics_bp, count, period)
+    limit_blueprint(daemon_bp, count, period)
+    limit_blueprint(index_bp, count, period)
+    limit_blueprint(market_bp, count, period)
 
     app.register_blueprint(api_bp)
 
