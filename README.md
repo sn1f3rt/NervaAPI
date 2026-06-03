@@ -2,6 +2,7 @@
 
 [![Lint](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml)
 [![Type Check](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml)
+[![Frontend](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/frontend.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/frontend.yml)
 
 ## Table of Contents
 
@@ -10,17 +11,22 @@
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running](#running)
+- [Documentation](#documentation)
 - [License](#license)
 
 ## About
 
 NervaAPI is a RESTful API server for the Nerva blockchain. It provides a simple interface to interact with the Nerva blockchain using HTTP requests.
 
+The repository is a monorepo: the Quart API lives in [`src/backend`](src/backend), and the documentation site — a Vue 3 + Tailwind CSS app built with Vite — lives in [`src/frontend`](src/frontend).
+
 ## Prerequisites
 
 - Git
 - Python >= 3.10
-- MongoDB database- [`uv` package manager](https://docs.astral.sh/uv/getting-started/installation/)
+- MongoDB database
+- [`uv` package manager](https://docs.astral.sh/uv/getting-started/installation/)
+- Node.js >= 22 (for the documentation frontend)
 - [make](https://www.gnu.org/software/make/) (optional)
 
 ## Installation
@@ -76,6 +82,32 @@ uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:17568 back
 ```
 
 The API server will be running at `http://localhost:17568`. The certificate and key files are required for SSL support.
+
+## Documentation
+
+The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`](src/frontend). It is a static API reference and is deployed separately from the backend. The JS tooling (`package.json`, Vite and TypeScript configs) lives at the repository root, alongside `pyproject.toml`.
+
+1. Install the Node dependencies
+
+   ```shell
+   npm install # or make frontend-install
+   ```
+
+2. Point it at your API by copying [`.env.example`](.env.example) to `.env` and setting `VITE_API_BASE_URL`.
+
+3. Start the dev server
+
+   ```shell
+   npm run dev # or make frontend-dev
+   ```
+
+4. Build the static site for production (outputs to `dist/`)
+
+   ```shell
+   npm run build # or make frontend-build
+   ```
+
+Deploy the contents of `dist/` to any static host (CDN, nginx, GitHub Pages). Since the frontend and backend are deployed to different origins, set `CORS_ALLOW_ORIGIN` in the backend config to the docs origin.
 
 ## License
 
