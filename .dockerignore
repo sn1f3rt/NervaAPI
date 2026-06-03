@@ -4,7 +4,6 @@
 .venv
 .ruff_cache
 **/__pycache__
-*.py[cod]
 node_modules
 dist
 logs/*.log*
