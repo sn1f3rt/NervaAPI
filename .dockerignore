@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.venv
+.ruff_cache
+**/__pycache__
+*.py[cod]
+node_modules
+dist
+logs/*.log*
+src/backend/config.py

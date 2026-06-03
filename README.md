@@ -12,6 +12,7 @@
 - [Configuration](#configuration)
 - [Running](#running)
 - [Documentation](#documentation)
+- [Deployment](#deployment)
 - [License](#license)
 
 ## About
@@ -111,7 +112,44 @@ The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`]
    npm run build # or make frontend-build
    ```
 
-In production, nginx serves the built `dist/` and reverse-proxies `/v1` to the API.
+In production, nginx serves the built `dist/` and reverse-proxies `/v1` to the API — see [Deployment](#deployment).
+
+## Deployment
+
+The repository ships a Docker Compose stack that builds the documentation, serves it, and runs the API behind a single port. It is meant to sit behind an existing reverse proxy (e.g. HestiaCP) that terminates TLS for your domain. Two services:
+
+- **web** — nginx serving the built docs and reverse-proxying everything under `/v1` to the API. Published on `127.0.0.1:17568`.
+- **api** — the Quart app run with Hypercorn (internal only).
+
+MongoDB (Atlas) and the Nerva daemon are external, so they are configured, not containerised.
+
+1. Create the backend config (kept out of the image and mounted at runtime):
+
+   ```shell
+   cp src/backend/config.example.py src/backend/config.py
+   ```
+
+   Set `MONGODB_URI` (your Atlas URI), `DAEMON_RPC_HOST`/`DAEMON_RPC_PORT` (your remote daemon), `CORS_ALLOW_ORIGIN` and `DOCS_URL`.
+
+2. Build and start (detached):
+
+   ```shell
+   docker compose up -d --build
+   ```
+
+   `restart: unless-stopped` keeps the stack running across reboots — ensure the Docker service itself starts on boot (`systemctl enable docker`).
+
+The site is then reachable at `http://127.0.0.1:17568`: the docs at `/`, the API at `/v1/...`.
+
+### Behind HestiaCP
+
+Point the domain's proxy at the stack over plain HTTP (TLS stays at HestiaCP's edge — no certificates are needed inside the stack). Using a custom web template, set:
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:17568;
+}
+```
 
 ## License
 

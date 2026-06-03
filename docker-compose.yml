@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      target: api
+    restart: unless-stopped
+    volumes:
+      - ./src/backend/config.py:/app/src/backend/config.py:ro
+      - api-logs:/app/logs
+    expose:
+      - "8080"
+
+  web:
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:17568:80"
+
+volumes:
+  api-logs:
