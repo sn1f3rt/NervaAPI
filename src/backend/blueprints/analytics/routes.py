@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from datetime import datetime
 
@@ -18,7 +18,7 @@ async def _analytics_fetch() -> tuple[Response, int]:
     try:
         collection = db.get_collection("analytics")
 
-        data: Dict[str, Any] = {"status": "success", "result": []}
+        data: dict[str, Any] = {"status": "success", "result": []}
 
         async for document in collection.find():
             data["result"].append(document)
@@ -52,7 +52,7 @@ async def _analytics_submit() -> tuple[Response, int]:
                         400,
                     )
 
-                data: Dict[str, Any] = await res.json()
+                data: dict[str, Any] = await res.json()
 
                 if "bogon" in data:
                     return jsonify({"status": "error", "message": "Invalid IP"}), 400
@@ -89,7 +89,7 @@ async def _analytics_submit() -> tuple[Response, int]:
                             400,
                         )
 
-                    data: Dict[str, Any] = (await res.json())["data"]["geo"]
+                    data = (await res.json())["data"]["geo"]
 
                     if data["ip"] != ip:
                         return (

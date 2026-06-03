@@ -1,6 +1,7 @@
 # NervaAPI
 
-[![Ruff](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/ruff.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/ruff.yml)
+[![Lint](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml)
+[![Type Check](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml)
 
 ## Table of Contents
 
@@ -39,7 +40,7 @@ NervaAPI is a RESTful API server for the Nerva blockchain. It provides a simple 
 3. Create a virtual environment
 
    ```shell
-   uv venv # or make env
+   uv venv
    ```
    
 4. Install dependencies

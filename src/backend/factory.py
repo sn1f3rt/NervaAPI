@@ -1,3 +1,5 @@
+from typing import Any
+
 import asyncio
 from datetime import timedelta
 from logging.config import dictConfig
@@ -13,7 +15,7 @@ from quart_rate_limiter import limit_blueprint
 daemon: DaemonRPC
 daemon_legacy: DaemonHTTP
 
-db: motor.motor_asyncio.AsyncIOMotorDatabase
+db: motor.motor_asyncio.AsyncIOMotorDatabase[dict[str, Any]]
 
 prune_url: str = "http://localhost:5000/analytics/prune"
 

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union
+from typing import Any
 
 from datetime import datetime
 
@@ -7,7 +7,7 @@ from quart import Response, jsonify, current_app
 
 from . import market_bp
 
-MarketData = Dict[str, Union[str, Dict[str, Any]]]
+MarketData = dict[str, str | dict[str, Any]]
 
 
 def _fmt_btc(value: float) -> str:
@@ -22,7 +22,7 @@ def _fmt_native(value: float, symbol: str, precision: int = 8) -> str:
     return f"{round(value, precision)} {symbol}"
 
 
-async def _fetch_nonkyc() -> Dict[str, Any]:
+async def _fetch_nonkyc() -> dict[str, Any]:
     async with aiohttp.ClientSession() as session:
         async with session.get("https://api.nonkyc.io/api/v2/market/getlist") as res:
             data = await res.json()
@@ -39,7 +39,7 @@ async def _market_nonkyc() -> tuple[Response, int]:
     pairs = current_app.config.get("NONKYC_MARKET_PAIRS", [])
     markets = await _fetch_nonkyc()
 
-    result: Dict[str, Any] = {}
+    result: dict[str, Any] = {}
 
     for pair in pairs:
         data = markets.get(pair)
@@ -93,7 +93,7 @@ async def _market_nonkyc() -> tuple[Response, int]:
     ), 200
 
 
-async def _fetch_cexswap() -> Dict[str, Any]:
+async def _fetch_cexswap() -> dict[str, Any]:
     async with aiohttp.ClientSession() as session:
         async with session.get(
             "https://cexswap.cc/api/public/markets/summary"
@@ -108,7 +108,7 @@ async def _market_cexswap() -> tuple[Response, int]:
     pairs = current_app.config.get("CEXSWAP_MARKET_PAIRS", [])
     markets = await _fetch_cexswap()
 
-    result: Dict[str, Any] = {}
+    result: dict[str, Any] = {}
 
     for pair in pairs:
         data = markets.get(pair)
@@ -155,7 +155,7 @@ async def _market_cexswap() -> tuple[Response, int]:
     ), 200
 
 
-async def _fetch_noirtrade() -> Dict[str, Any]:
+async def _fetch_noirtrade() -> dict[str, Any]:
     async with aiohttp.ClientSession() as session:
         async with session.get("https://noirtrade.com/api/v1/tickers") as res:
             data = await res.json()
@@ -168,7 +168,7 @@ async def _market_noirtrade() -> tuple[Response, int]:
     pairs = current_app.config.get("NOIRTRADE_MARKET_PAIRS", [])
     markets = await _fetch_noirtrade()
 
-    result: Dict[str, Any] = {}
+    result: dict[str, Any] = {}
 
     for pair in pairs:
         data = markets.get(pair)
@@ -220,7 +220,7 @@ async def _market_noirtrade() -> tuple[Response, int]:
     ), 200
 
 
-async def _fetch_klingex() -> Dict[str, Any]:
+async def _fetch_klingex() -> dict[str, Any]:
     async with aiohttp.ClientSession() as session:
         async with session.get("https://api.klingex.io/api/markets") as res:
             data = await res.json()
@@ -237,7 +237,7 @@ async def _market_klingex() -> tuple[Response, int]:
     pairs = current_app.config.get("KLINGEX_MARKET_PAIRS", [])
     markets = await _fetch_klingex()
 
-    result: Dict[str, Any] = {}
+    result: dict[str, Any] = {}
 
     for pair in pairs:
         data = markets.get(pair)

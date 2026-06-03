@@ -30,6 +30,7 @@ speed = [
 
 [dependency-groups]
 dev = [
+    "mypy==2.1.0",
     "pre-commit==4.5.1",
     "ruff==0.14.14",
 ]
@@ -53,3 +54,20 @@ length-sort = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/backend"]
+
+[tool.mypy]
+files = ["src/backend"]
+mypy_path = "src"
+explicit_package_bases = true
+strict = true
+
+[[tool.mypy.overrides]]
+module = [
+    "nerva.*",
+    "schedule.*",
+    "validators.*",
+    "quart_rate_limiter.*",
+    "quart_cors.*",
+    "motor.*",
+]
+ignore_missing_imports = true

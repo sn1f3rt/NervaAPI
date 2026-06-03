@@ -162,4 +162,3 @@ cython_debug/
 # NervaAPI
 src/backend/config.py
 logs/*.log*
-uv.lock

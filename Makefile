@@ -1,9 +1,3 @@
-env:
-	uv venv
-
-rmenv:
-	rm -rf .venv
-
 install: install-prod
 
 install-dev:
@@ -23,12 +17,15 @@ run-prod:
 run-prod-ssl:
 	uv run hypercorn --bind 0.0.0.0:17568 --certfile cert.pem --keyfile key.pem backend.launcher:app
 
-format:
-	ruff check --fix .
-	ruff format .
+lint:
+	uv run ruff check --fix .
+	uv run ruff format .
+
+typecheck:
+	uv run mypy src/backend
 
 clean:
 	rm -f logs/*.log
 
-.PHONY: env rmenv install install-dev install-prod run run-dev run-prod run-prod-ssl format clean
+.PHONY: install install-dev install-prod run run-dev run-prod run-prod-ssl lint typecheck clean
 .DEFAULT_GOAL := run

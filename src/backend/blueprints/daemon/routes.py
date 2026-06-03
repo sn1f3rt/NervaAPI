@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from quart import Response, jsonify, request
 from validators import ip_address
@@ -11,7 +11,7 @@ from . import daemon_bp
 
 @daemon_bp.route("/daemon/get_version", methods=["GET"])
 async def _daemon_get_version() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.get_version()
+    data: dict[str, Any] = await daemon.get_version()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -21,7 +21,7 @@ async def _daemon_get_version() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_info", methods=["GET"])
 async def _daemon_get_info() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.get_info()
+    data: dict[str, Any] = await daemon.get_info()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -31,7 +31,7 @@ async def _daemon_get_info() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/hard_fork_info", methods=["GET"])
 async def _daemon_hard_fork_info() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.hard_fork_info()
+    data: dict[str, Any] = await daemon.hard_fork_info()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -41,8 +41,8 @@ async def _daemon_hard_fork_info() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block", methods=["GET"])
 async def _daemon_get_block() -> tuple[Response, int]:
-    block_hash: Optional[str] = request.args.get("hash", None)
-    height: Optional[str] = request.args.get("height", None)
+    block_hash: str | None = request.args.get("hash", None)
+    height: str | None = request.args.get("height", None)
 
     if block_hash and height:
         return (
@@ -66,7 +66,7 @@ async def _daemon_get_block() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any]
+    data: dict[str, Any]
     if block_hash:
         data = await daemon.get_block(block_hash=block_hash)
 
@@ -85,7 +85,7 @@ async def _daemon_get_block() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block_count", methods=["GET"])
 async def _daemon_get_block_count() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.get_block_count()
+    data: dict[str, Any] = await daemon.get_block_count()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -95,7 +95,7 @@ async def _daemon_get_block_count() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_last_block_header", methods=["GET"])
 async def _daemon_get_last_block_header() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.get_last_block_header()
+    data: dict[str, Any] = await daemon.get_last_block_header()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -105,7 +105,7 @@ async def _daemon_get_last_block_header() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block_header_by_hash", methods=["GET"])
 async def _daemon_get_block_header_by_hash() -> tuple[Response, int]:
-    block_hash: Optional[str] = request.args.get("hash", None)
+    block_hash: str | None = request.args.get("hash", None)
 
     if not block_hash:
         return (
@@ -113,7 +113,7 @@ async def _daemon_get_block_header_by_hash() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any] = await daemon.get_block_header_by_hash(
+    data: dict[str, Any] = await daemon.get_block_header_by_hash(
         block_hash=block_hash
     )
 
@@ -125,7 +125,7 @@ async def _daemon_get_block_header_by_hash() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block_header_by_height", methods=["GET"])
 async def _daemon_get_block_header_by_height() -> tuple[Response, int]:
-    height: Optional[str] = request.args.get("height", None)
+    height: str | None = request.args.get("height", None)
 
     if not height:
         return (
@@ -134,9 +134,9 @@ async def _daemon_get_block_header_by_height() -> tuple[Response, int]:
         )
 
     try:
-        data: Dict[str, Any] = await daemon.get_block_header_by_height(
+        data: dict[str, Any] = await daemon.get_block_header_by_height(
             height=int(height)
-        )  # type: ignore
+        )
 
     except (TypeError, ValueError):
         return jsonify({"status": "error", "error": "Invalid block height"}), 400
@@ -149,8 +149,8 @@ async def _daemon_get_block_header_by_height() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block_headers_range", methods=["GET"])
 async def _daemon_get_block_headers_range() -> tuple[Response, int]:
-    start_height: Optional[str] = request.args.get("start_height", None)
-    end_height: Optional[str] = request.args.get("end_height", None)
+    start_height: str | None = request.args.get("start_height", None)
+    end_height: str | None = request.args.get("end_height", None)
 
     if not start_height or not end_height:
         return (
@@ -164,9 +164,9 @@ async def _daemon_get_block_headers_range() -> tuple[Response, int]:
         )
 
     try:
-        data: Dict[str, Any] = await daemon.get_block_headers_range(
-            start_height=int(start_height),  # type: ignore
-            end_height=int(end_height),  # type: ignore
+        data: dict[str, Any] = await daemon.get_block_headers_range(
+            start_height=int(start_height),
+            end_height=int(end_height),
         )
 
     except (TypeError, ValueError):
@@ -180,11 +180,11 @@ async def _daemon_get_block_headers_range() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_block_template", methods=["GET"])
 async def _daemon_get_block_template() -> tuple[Response, int]:
-    address: Optional[str] = request.args.get("address", None)
-    reserve: Optional[str] = request.args.get("reserve", None)
+    address: str | None = request.args.get("address", None)
+    reserve: str | None = request.args.get("reserve", None)
 
     try:
-        data: Dict[str, Any] = await daemon.get_block_template(
+        data: dict[str, Any] = await daemon.get_block_template(
             wallet_address=address,
             reserve_size=int(reserve),  # type: ignore
         )
@@ -200,7 +200,7 @@ async def _daemon_get_block_template() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_connections", methods=["GET"])
 async def _daemon_get_connections() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.get_connections()
+    data: dict[str, Any] = await daemon.get_connections()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -210,15 +210,15 @@ async def _daemon_get_connections() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_fee_estimate", methods=["GET"])
 async def _daemon_get_fee_estimate() -> tuple[Response, int]:
-    grace_blocks: Optional[str] = request.args.get("grace_blocks", None)
+    grace_blocks: str | None = request.args.get("grace_blocks", None)
 
-    data: Dict[str, Any]
+    data: dict[str, Any]
     if not grace_blocks:
         data = await daemon.get_fee_estimate()
 
     else:
         try:
-            data = await daemon.get_fee_estimate(grace_blocks=int(grace_blocks))  # type: ignore
+            data = await daemon.get_fee_estimate(grace_blocks=int(grace_blocks))
 
         except (TypeError, ValueError):
             return jsonify({"status": "error", "error": "Invalid grace blocks"}), 400
@@ -245,7 +245,7 @@ async def _daemon_get_generated_coins() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_bans", methods=["GET"])
 async def _daemon_get_bans() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon.get_bans()
+    data: dict[str, Any] = await daemon.get_bans()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -255,7 +255,7 @@ async def _daemon_get_bans() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/set_bans", methods=["POST"])
 async def _daemon_set_bans() -> tuple[Response, int]:
-    data: Dict[str, Any] = await request.get_json()
+    data: dict[str, Any] = await request.get_json()
 
     if not data:
         return (
@@ -268,9 +268,9 @@ async def _daemon_set_bans() -> tuple[Response, int]:
             400,
         )
 
-    host: Optional[str] = data.get("host")
-    ban: Optional[str] = data.get("ban")
-    time: Optional[str] = data.get("time")
+    host: str | None = data.get("host")
+    ban: str | None = data.get("ban")
+    time: str | None = data.get("time")
 
     if not all([host, ban, time]):
         return (
@@ -283,7 +283,11 @@ async def _daemon_set_bans() -> tuple[Response, int]:
             400,
         )
 
-    if not all([isinstance(host, str), isinstance(ban, str), isinstance(time, str)]):
+    if (
+        not isinstance(host, str)
+        or not isinstance(ban, str)
+        or not isinstance(time, str)
+    ):
         return jsonify({"status": "error", "error": "Invalid data type"}), 400
 
     if not ip_address.ipv4(host):
@@ -310,7 +314,7 @@ async def _daemon_set_bans() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_transaction_pool", methods=["GET"])
 async def _daemon_get_transaction_pool() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_legacy.get_transaction_pool()
+    data: dict[str, Any] = await daemon_legacy.get_transaction_pool()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -332,7 +336,7 @@ async def _daemon_get_transaction_pool() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_transaction_pool_stats", methods=["GET"])
 async def _daemon_get_transaction_pool_stats() -> tuple[Response, int]:
-    data: Dict[str, Any] = await daemon_legacy.get_transaction_pool_stats()
+    data: dict[str, Any] = await daemon_legacy.get_transaction_pool_stats()
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -350,7 +354,7 @@ async def _daemon_get_transaction_pool_stats() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_transactions", methods=["GET"])
 async def _daemon_get_transactions() -> tuple[Response, int]:
-    hashes: List[str] = request.args.getlist("hashes")
+    hashes: list[str] = request.args.getlist("hashes")
     decode_as_json: bool = request.args.get("decode_as_json", False) == "true"
     prune: bool = request.args.get("prune", False) == "true"
     split: bool = request.args.get("split", False) == "true"
@@ -366,7 +370,7 @@ async def _daemon_get_transactions() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any] = await daemon_legacy.get_transactions(
+    data: dict[str, Any] = await daemon_legacy.get_transactions(
         txs_hashes=hashes, decode_as_json=decode_as_json, prune=prune, split=split
     )
 
@@ -390,7 +394,7 @@ async def _daemon_get_transactions() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/decode_outputs", methods=["POST"])
 async def _daemon_decode_outputs() -> tuple[Response, int]:
-    data: Dict[str, Any] = await request.get_json()
+    data: dict[str, Any] = await request.get_json()
 
     if not data:
         return (
@@ -405,9 +409,9 @@ async def _daemon_decode_outputs() -> tuple[Response, int]:
             400,
         )
 
-    hashes: Optional[List[str]] = data.get("hashes")
-    address: Optional[str] = data.get("address")
-    view_key: Optional[str] = data.get("view_key")
+    hashes: list[str] | None = data.get("hashes")
+    address: str | None = data.get("address")
+    view_key: str | None = data.get("view_key")
 
     if not all([hashes, address, view_key]):
         return (
@@ -431,7 +435,7 @@ async def _daemon_decode_outputs() -> tuple[Response, int]:
     ):
         return jsonify({"status": "error", "error": "Invalid data type"}), 400
 
-    result_data: Dict[str, Any] = await daemon.decode_outputs(
+    result_data: dict[str, Any] = await daemon.decode_outputs(
         tx_hashes=hashes, address=address, sec_view_key=view_key
     )
 
@@ -443,7 +447,7 @@ async def _daemon_decode_outputs() -> tuple[Response, int]:
 
 @daemon_bp.route("/daemon/get_transaction_pubkey", methods=["GET"])
 async def _daemon_get_transaction_pubkey() -> tuple[Response, int]:
-    extra: Optional[str] = request.args.get("extra")
+    extra: str | None = request.args.get("extra")
 
     if not extra:
         return (
@@ -451,7 +455,7 @@ async def _daemon_get_transaction_pubkey() -> tuple[Response, int]:
             400,
         )
 
-    data: Dict[str, Any] = await daemon.get_tx_pubkey(extra=extra)
+    data: dict[str, Any] = await daemon.get_tx_pubkey(extra=extra)
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
