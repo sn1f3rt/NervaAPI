@@ -19,7 +19,6 @@ function apply(t: Theme): void {
   document.documentElement.setAttribute("data-theme", t)
 }
 
-// Module-level singleton so every consumer shares one reactive theme.
 const theme = ref<Theme>(read())
 apply(theme.value)
 

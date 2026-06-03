@@ -168,4 +168,3 @@ node_modules/
 dist/
 .vite/
 *.local
-src/frontend/.env

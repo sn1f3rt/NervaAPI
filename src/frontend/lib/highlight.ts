@@ -1,6 +1,3 @@
-// Lightweight, dependency-free syntax highlighting for the docs. JSON responses
-// and shell snippets are turned into token-span HTML rendered with v-html.
-
 export function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }

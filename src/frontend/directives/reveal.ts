@@ -4,8 +4,6 @@ function prefersReduced(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
 }
 
-// v-reveal: fades + lifts an element into view the first time it intersects the
-// viewport. Honours reduced-motion by revealing immediately.
 export const vReveal: Directive<HTMLElement> = {
   mounted(el) {
     if (prefersReduced()) {

@@ -1,7 +1,5 @@
 import { onMounted, onUnmounted, ref } from "vue"
 
-// Tracks which [data-spy] section is currently at the top of the viewport so the
-// sidebar can highlight the matching link. Each spy target's id matches a nav link.
 export function useScrollSpy() {
   const activeId = ref<string>("")
   let targets: HTMLElement[] = []

@@ -1,7 +1,5 @@
 import { onMounted, onUnmounted, ref } from "vue"
 
-// Reactive read-position helpers: `progress` (0..1 down the page) drives the top
-// progress bar, `showTop` toggles the back-to-top button.
 export function useScrollProgress(threshold = 600) {
   const progress = ref(0)
   const showTop = ref(false)

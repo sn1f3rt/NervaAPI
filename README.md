@@ -85,7 +85,7 @@ The API server will be running at `http://localhost:17568`. The certificate and 
 
 ## Documentation
 
-The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`](src/frontend). It is a static API reference and is deployed separately from the backend. The JS tooling (`package.json`, Vite and TypeScript configs) lives at the repository root, alongside `pyproject.toml`.
+The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`](src/frontend). It is a static API reference. The API is served under `/v1` on the same origin, so the docs derive their base URL from the browser — there is nothing to configure. The JS tooling (`package.json`, Vite and TypeScript configs) lives at the repository root, alongside `pyproject.toml`.
 
 1. Install the Node dependencies
 
@@ -93,9 +93,7 @@ The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`]
    npm install # or make frontend-install
    ```
 
-2. Point it at your API by copying [`.env.example`](.env.example) to `.env` and setting `VITE_API_BASE_URL`.
-
-3. Start the dev server (runs on `http://localhost:3000`)
+2. Start the dev server — runs on `http://127.0.0.1:3000` and proxies `/v1` to the backend on `:8080`
 
    ```shell
    npm run dev # or make frontend-dev
@@ -107,13 +105,13 @@ The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`]
    npm run serve
    ```
 
-4. Build the static site for production (outputs to `dist/`)
+3. Build the static site for production (outputs to `dist/`)
 
    ```shell
    npm run build # or make frontend-build
    ```
 
-Deploy the contents of `dist/` to any static host (CDN, nginx, GitHub Pages). Since the frontend and backend are deployed to different origins, set `CORS_ALLOW_ORIGIN` in the backend config to the docs origin.
+In production, nginx serves the built `dist/` and reverse-proxies `/v1` to the API.
 
 ## License
 

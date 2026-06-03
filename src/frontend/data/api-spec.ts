@@ -1,7 +1,3 @@
-// Typed port of the NervaAPI reference data. Single source of truth for the
-// documentation: the sidebar navigation and the endpoint reference are both
-// generated from this structure, so the docs and the API stay in lockstep.
-
 export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 export type ParamLoc = "query" | "body" | "header"
 

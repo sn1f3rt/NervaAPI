@@ -1,12 +1,7 @@
 import type { Endpoint } from "../data/api-spec"
 import { esc } from "./highlight"
 
-// Base URL the documentation describes. Configured at build time via
-// VITE_API_BASE_URL; falls back to the local dev server.
-export const API_BASE: string = (
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) || "http://localhost:8080"
-).replace(/\/+$/, "")
-
+export const API_BASE: string = window.location.origin + "/v1"
 export const API_HOST: string = API_BASE.replace(/^https?:\/\//, "")
 
 export interface Snippet {
