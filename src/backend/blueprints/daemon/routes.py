@@ -1,9 +1,7 @@
 from typing import Any
 
 from quart import Response, jsonify, request
-from validators import ip_address
 
-from backend.utils import calculate_seconds_from_time_string
 from backend.factory import daemon, daemon_legacy
 
 from . import daemon_bp
@@ -246,65 +244,6 @@ async def _daemon_get_generated_coins() -> tuple[Response, int]:
 @daemon_bp.route("/daemon/get_bans", methods=["GET"])
 async def _daemon_get_bans() -> tuple[Response, int]:
     data: dict[str, Any] = await daemon.get_bans()
-
-    if "error" in data:
-        return jsonify({"status": "error", "error": data["error"]}), 400
-
-    return jsonify({"status": "success", "result": data["result"]}), 200
-
-
-@daemon_bp.route("/daemon/set_bans", methods=["POST"])
-async def _daemon_set_bans() -> tuple[Response, int]:
-    data: dict[str, Any] = await request.get_json()
-
-    if not data:
-        return (
-            jsonify(
-                {
-                    "status": "error",
-                    "error": "You must provide a host, ban status and time",
-                }
-            ),
-            400,
-        )
-
-    host: str | None = data.get("host")
-    ban: str | None = data.get("ban")
-    time: str | None = data.get("time")
-
-    if not all([host, ban, time]):
-        return (
-            jsonify(
-                {
-                    "status": "error",
-                    "error": "You must provide a host, ban status and time",
-                }
-            ),
-            400,
-        )
-
-    if (
-        not isinstance(host, str)
-        or not isinstance(ban, str)
-        or not isinstance(time, str)
-    ):
-        return jsonify({"status": "error", "error": "Invalid data type"}), 400
-
-    if not ip_address.ipv4(host):
-        return jsonify({"status": "error", "error": "Invalid host"}), 400
-
-    if ban.lower() not in ["true", "false"]:
-        return jsonify({"status": "error", "error": "Invalid ban status"}), 400
-
-    if calculate_seconds_from_time_string(time) == 0:
-        return jsonify({"status": "error", "error": "Invalid time"}), 400
-
-    ban_status: bool = True if ban == "true" else False
-    seconds: int = calculate_seconds_from_time_string(time)
-
-    data = await daemon.set_bans(
-        bans=[{"host": host, "ban": ban_status, "seconds": seconds}]
-    )
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400

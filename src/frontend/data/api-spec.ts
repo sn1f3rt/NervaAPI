@@ -391,24 +391,6 @@ export const API_SPEC: ApiSpec = {
           },
         },
         {
-          id: "daemon-set_bans",
-          method: "POST",
-          path: "/daemon/set_bans",
-          summary: "Ban or unban a host.",
-          description: "Bans (or unbans) a single host for a given duration. The request body is JSON.",
-          params: [
-            { name: "host", in: "body", type: "string", required: true, desc: "IPv4 address to ban or unban." },
-            { name: "ban", in: "body", type: "string", required: true, desc: 'Either <code>"true"</code> to ban or <code>"false"</code> to unban (sent as a string).' },
-            { name: "time", in: "body", type: "string", required: true, desc: 'Ban duration as space-separated tokens — <code>s</code>, <code>m</code>, <code>h</code>, <code>d</code>. e.g. <code>"1h 30m"</code>, <code>"7d"</code>, <code>"3600s"</code>.' },
-          ],
-          sample: { host: "203.0.113.10", ban: "true", time: "1h 30m" },
-          response: { status: "success", result: { status: "OK" } },
-          errors: [
-            { code: 400, reason: "Missing <code>host</code>, <code>ban</code> or <code>time</code>." },
-            { code: 400, reason: "A field has the wrong type, <code>host</code> is not a valid IPv4 address, <code>ban</code> is not <code>\"true\"</code>/<code>\"false\"</code>, or <code>time</code> evaluates to 0 seconds." },
-          ],
-        },
-        {
           id: "daemon-get_transaction_pool",
           method: "GET",
           path: "/daemon/get_transaction_pool",
