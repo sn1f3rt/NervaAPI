@@ -48,7 +48,7 @@ export interface ApiSpec {
 export const API_SPEC: ApiSpec = {
   meta: {
     name: "NervaAPI",
-    version: "1.0.0",
+    version: __APP_VERSION__,
     tagline: "REST interface for the Nerva (XNV) blockchain",
   },
 
