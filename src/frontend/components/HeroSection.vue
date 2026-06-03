@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { API_SPEC } from "../data/api-spec"
 import { API_HOST } from "../lib/curl"
+
+const version = API_SPEC.meta.version
 </script>
 
 <template>
   <section class="hero" id="introduction" data-spy>
     <span class="hero__eyebrow rise" style="animation-delay: 0ms"><span class="dot" />Public API
-      &middot; v1.0.0</span>
+      &middot; v{{ version }}</span>
     <h1 class="rise" style="animation-delay: 70ms">The Nerva <span class="grad">(XNV) Public
         API</span></h1>
     <p class="hero__lead rise" style="animation-delay: 140ms">

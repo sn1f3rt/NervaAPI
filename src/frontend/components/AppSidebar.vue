@@ -39,6 +39,7 @@ const groups: NavGroup[] = [
   })),
 ]
 
+const version = API_SPEC.meta.version
 const query = ref("")
 const collapsed = reactive<Record<string, boolean>>({})
 const searchEl = ref<HTMLInputElement | null>(null)
@@ -98,7 +99,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKey))
       <img class="brand__logo" src="/nerva.png" alt="Nerva logo" />
       <div>
         <span class="brand__name">Nerva<b>API</b></span>
-        <span class="brand__tag">Public &middot; v1.0.0</span>
+        <span class="brand__tag">Public &middot; v{{ version }}</span>
       </div>
     </div>
 
