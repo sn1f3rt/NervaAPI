@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 from typing import Any, Dict, List, Optional
 
 from nerva import utils
 from quart import Response, jsonify, request
 from validators import ip_address
 
-from factory import daemon, daemon_legacy
+from backend.factory import daemon, daemon_legacy
 
 from . import daemon_bp
 

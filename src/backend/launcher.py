@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 import asyncio
 
 from quart import Quart
 
-from factory import create_app, schedule_task, setup_schedule
+from backend.factory import create_app, schedule_task, setup_schedule
 
 try:
     # noinspection PyUnresolvedReferences

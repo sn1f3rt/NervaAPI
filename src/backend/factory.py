@@ -6,6 +6,7 @@ import aiohttp
 import schedule
 import motor.motor_asyncio
 from quart import Quart, Response, jsonify
+from quart_cors import cors
 from nerva.daemon import Daemon, DaemonLegacy
 from quart_rate_limiter import limit_blueprint
 
@@ -13,6 +14,8 @@ daemon: Daemon
 daemon_legacy: DaemonLegacy
 
 db: motor.motor_asyncio.AsyncIOMotorDatabase
+
+prune_url: str = "http://localhost:5000/analytics/prune"
 
 
 dictConfig(
@@ -48,7 +51,7 @@ async def schedule_task() -> None:
 
 async def prune_analytics() -> None:
     async with aiohttp.ClientSession() as session:
-        async with session.delete("http://localhost:5000/analytics/prune"):
+        async with session.delete(prune_url):
             pass
 
 
@@ -59,8 +62,13 @@ def setup_schedule() -> None:
 
 
 def create_app() -> Quart:
-    app: Quart = Quart(__name__, static_url_path="/assets", static_folder="assets")
+    app: Quart = Quart(__name__, static_folder=None)
     app.config.from_pyfile("config.py")
+
+    app = cors(app, allow_origin=app.config["CORS_ALLOW_ORIGIN"])
+
+    global prune_url
+    prune_url = app.config["INTERNAL_PRUNE_URL"]
 
     global daemon, daemon_legacy
     daemon = Daemon(
@@ -108,10 +116,10 @@ def create_app() -> Quart:
         app.logger.error(e)
         return jsonify({"error": "An unexpected error occurred"}), 500
 
-    from blueprints.index import index_bp
-    from blueprints.daemon import daemon_bp
-    from blueprints.market import market_bp
-    from blueprints.analytics import analytics_bp
+    from backend.blueprints.index import index_bp
+    from backend.blueprints.daemon import daemon_bp
+    from backend.blueprints.market import market_bp
+    from backend.blueprints.analytics import analytics_bp
 
     limit_blueprint(analytics_bp, 60, timedelta(seconds=60))
     limit_blueprint(daemon_bp, 60, timedelta(seconds=60))

@@ -15,13 +15,13 @@ install-prod:
 run: run-dev
 
 run-dev:
-	uv run launcher.py
+	uv run python -m backend.launcher
 
 run-prod:
-	uv run hypercorn --bind 0.0.0.0:17568 launcher:app
+	uv run hypercorn --bind 0.0.0.0:17568 backend.launcher:app
 
 run-prod-ssl:
-	uv run hypercorn --bind 0.0.0.0:17568 --certfile cert.pem --keyfile key.pem launcher:app
+	uv run hypercorn --bind 0.0.0.0:17568 --certfile cert.pem --keyfile key.pem backend.launcher:app
 
 format:
 	ruff check --fix .

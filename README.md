@@ -50,14 +50,14 @@ NervaAPI is a RESTful API server for the Nerva blockchain. It provides a simple 
 
 ## Configuration
 
-Copy the [`config.example.py`](config.example.py) file to `config.py` and update the variables.
+Copy the [`config.example.py`](src/backend/config.example.py) file to `src/backend/config.py` and update the variables.
 
 ## Running
 
 ### Development
 
 ```shell
-uv run launcher.py # or make run
+uv run python -m backend.launcher # or make run
 ```
 
 The API server will be running at `http://localhost:5000`.
@@ -65,13 +65,13 @@ The API server will be running at `http://localhost:5000`.
 ### Production
 
 ```shell
-uv run hypercorn --bind 0.0.0.0:17568 launcher:app # or make run-prod
+uv run hypercorn --bind 0.0.0.0:17568 backend.launcher:app # or make run-prod
 ```
 
 or if you want to enable SSL support
 
 ```shell
-uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:17568 launcher:app # or make run-prod-ssl
+uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:17568 backend.launcher:app # or make run-prod-ssl
 ```
 
 The API server will be running at `http://localhost:17568`. The certificate and key files are required for SSL support.

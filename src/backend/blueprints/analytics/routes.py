@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Any, Dict
 
 from datetime import datetime
@@ -7,7 +5,7 @@ from datetime import datetime
 import aiohttp
 from quart import Response, jsonify, request, current_app
 
-from factory import db
+from backend.factory import db
 
 from . import analytics_bp
 

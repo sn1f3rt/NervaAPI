@@ -76,9 +76,18 @@ CEXSWAP_MARKET_PAIRS = ["XNV-BTC", "XNV-XMR"]
 NOIRTRADE_MARKET_PAIRS = ["XNV_USDT0"]
 KLINGEX_MARKET_PAIRS = ["XNV-USDT"]
 
-# Development
+# Server
 """
-Leave as is in production.
+CORS_ALLOW_ORIGIN controls which browser origins may call the API.
+Set it to the deployed frontend/docs origin in production
+(e.g. "https://docs.nerva.one"), or "*" to allow any origin.
+
+DOCS_URL is advertised at the API root (GET /) so clients can find the docs.
+
+INTERNAL_PRUNE_URL is the URL the daily scheduler calls to prune stale
+analytics records. It should point at this API's own /analytics/prune endpoint.
 """
 
-TEMPLATES_AUTO_RELOAD = False
+CORS_ALLOW_ORIGIN = "*"
+DOCS_URL = "https://docs.nerva.one"
+INTERNAL_PRUNE_URL = "http://localhost:5000/analytics/prune"

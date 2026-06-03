@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "NervaAPI"
 version = "1.0.0"
@@ -12,6 +16,7 @@ dependencies = [
     "aiohttp==3.10.10",
     "motor==3.6.0",
     "nerva-py==1.1.1",
+    "quart-cors==0.8.0",
     "quart-rate-limiter==0.10.0",
     "quart==0.20.0",
     "schedule==1.2.2",
@@ -37,6 +42,7 @@ target-version = "py313"
 select = ["I"]
 
 [tool.ruff.lint.isort]
+known-first-party = ["backend"]
 section-order = ["future", "typing", "standard-library", "third-party", "first-party", "local-folder"]
 force-wrap-aliases = true
 combine-as-imports = true
@@ -44,3 +50,6 @@ length-sort = true
 
 [tool.ruff.lint.isort.sections]
 "typing" = ["typing"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/backend"]
