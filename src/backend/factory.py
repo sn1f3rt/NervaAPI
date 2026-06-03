@@ -118,19 +118,19 @@ def create_app() -> Quart:
         app.logger.error(e)
         return jsonify({"error": "An unexpected error occurred"}), 500
 
-    from backend.blueprints.index import index_bp
-    from backend.blueprints.daemon import daemon_bp
-    from backend.blueprints.market import market_bp
-    from backend.blueprints.analytics import analytics_bp
+    from backend.blueprints import (
+        api_bp,
+        index_bp,
+        daemon_bp,
+        market_bp,
+        analytics_bp,
+    )
 
     limit_blueprint(analytics_bp, 60, timedelta(seconds=60))
     limit_blueprint(daemon_bp, 60, timedelta(seconds=60))
     limit_blueprint(index_bp, 60, timedelta(seconds=60))
     limit_blueprint(market_bp, 60, timedelta(seconds=60))
 
-    app.register_blueprint(analytics_bp)
-    app.register_blueprint(daemon_bp)
-    app.register_blueprint(index_bp)
-    app.register_blueprint(market_bp)
+    app.register_blueprint(api_bp)
 
     return app

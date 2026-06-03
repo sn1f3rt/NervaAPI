@@ -10,7 +10,7 @@ from . import index_bp
 
 try:
     API_VERSION = pkg_version("NervaAPI")
-except PackageNotFoundError:  # the package is always installed in practice
+except PackageNotFoundError:
     API_VERSION = "0.0.0"
 
 
