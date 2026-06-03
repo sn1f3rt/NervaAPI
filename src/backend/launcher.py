@@ -25,4 +25,4 @@ if __name__ == "__main__":
 
     loop.create_task(schedule_task())
 
-    app.run(loop=loop)
+    app.run(host="127.0.0.1", port=8080, loop=loop)

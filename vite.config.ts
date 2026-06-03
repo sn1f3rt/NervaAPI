@@ -10,6 +10,9 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   root: fileURLToPath(new URL('./src/frontend', import.meta.url)),
   envDir: fileURLToPath(new URL('.', import.meta.url)),
+  server: {
+    port: 3000,
+  },
   plugins: [vue(), tailwindcss()],
   build: {
     outDir: fileURLToPath(new URL('./dist', import.meta.url)),

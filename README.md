@@ -67,7 +67,7 @@ Copy the [`config.example.py`](src/backend/config.example.py) file to `src/backe
 uv run python -m backend.launcher # or make run
 ```
 
-The API server will be running at `http://localhost:5000`.
+The API server will be running at `http://localhost:8080`.
 
 ### Production
 
@@ -95,10 +95,16 @@ The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`]
 
 2. Point it at your API by copying [`.env.example`](.env.example) to `.env` and setting `VITE_API_BASE_URL`.
 
-3. Start the dev server
+3. Start the dev server (runs on `http://localhost:3000`)
 
    ```shell
    npm run dev # or make frontend-dev
+   ```
+
+   To bring up the whole stack at once — the backend on `:8080` and the docs on `:3000` — run:
+
+   ```shell
+   npm run serve
    ```
 
 4. Build the static site for production (outputs to `dist/`)

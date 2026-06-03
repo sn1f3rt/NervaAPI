@@ -90,4 +90,4 @@ analytics records. It should point at this API's own /analytics/prune endpoint.
 
 CORS_ALLOW_ORIGIN = "*"
 DOCS_URL = "https://docs.nerva.one"
-INTERNAL_PRUNE_URL = "http://localhost:5000/analytics/prune"
+INTERNAL_PRUNE_URL = "http://localhost:8080/analytics/prune"
