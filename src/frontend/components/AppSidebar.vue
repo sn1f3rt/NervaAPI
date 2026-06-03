@@ -99,7 +99,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKey))
       <img class="brand__logo" src="/nerva.png" alt="Nerva logo" />
       <div>
         <span class="brand__name">Nerva<b>API</b></span>
-        <span class="brand__tag">Public &middot; v{{ version }}</span>
+        <span class="brand__tag">Public &middot; <span class="ver">v{{ version }}</span></span>
       </div>
     </div>
 

@@ -708,7 +708,7 @@ export const API_SPEC: ApiSpec = {
               {
                 _id: "66b9f0a2c4e5d6f708192a3b",
                 ip: "203.0.113.10",
-                version: "0.1.8.0",
+                version: "0.2.2.0",
                 last_updated: "2026-05-30T18:24:11.000Z",
                 latitude: "50.1109",
                 longitude: "8.6821",
@@ -729,10 +729,10 @@ export const API_SPEC: ApiSpec = {
           auth:
             "Requires a <code>User-Agent</code> header of the form <code>nerva-cli/&lt;version&gt;</code>. Requests from other clients are rejected.",
           params: [
-            { name: "User-Agent", in: "header", type: "string", required: true, desc: "Must be <code>nerva-cli/&lt;version&gt;</code>, e.g. <code>nerva-cli/0.1.8.0</code>." },
+            { name: "User-Agent", in: "header", type: "string", required: true, desc: "Must be <code>nerva-cli/&lt;version&gt;</code>, e.g. <code>nerva-cli/0.2.2.0</code>." },
           ],
           sample: {},
-          headers: { "User-Agent": "nerva-cli/0.1.8.0" },
+          headers: { "User-Agent": "nerva-cli/0.2.2.0" },
           response: { status: "success" },
           errors: [
             { code: 400, reason: "Analytics disabled, invalid/zero User-Agent, invalid IP, or upstream geo lookup failed." },
