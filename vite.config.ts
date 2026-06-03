@@ -11,6 +11,7 @@ export default defineConfig({
   root: fileURLToPath(new URL('./src/frontend', import.meta.url)),
   envDir: fileURLToPath(new URL('.', import.meta.url)),
   server: {
+    host: '127.0.0.1',
     port: 3000,
   },
   plugins: [vue(), tailwindcss()],
