@@ -1,9 +1,9 @@
 {
-  "name": "nervaapi-docs",
+  "name": "nervaapi-web",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Documentation site for the Nerva (XNV) Public API",
+  "description": "Frontend for the Nerva (XNV) Public API",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
