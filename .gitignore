@@ -162,3 +162,10 @@ cython_debug/
 # NervaAPI
 src/backend/config.py
 logs/*.log*
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+*.local
+src/frontend/.env

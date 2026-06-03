@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* Tokens and the full design system are layered in alongside the components.
+   This scaffold keeps only the base needed to render the shell. */
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#app {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+}
