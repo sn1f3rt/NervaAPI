@@ -15,7 +15,7 @@ requires-python = ">=3.10"
 dependencies = [
     "aiohttp==3.10.10",
     "motor==3.6.0",
-    "nerva-py==1.1.1",
+    "nerva-py==2.0.0",
     "quart-cors==0.8.0",
     "quart-rate-limiter==0.10.0",
     "quart==0.20.0",

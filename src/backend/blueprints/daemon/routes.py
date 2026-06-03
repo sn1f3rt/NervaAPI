@@ -1,9 +1,9 @@
 from typing import Any, Dict, List, Optional
 
-from nerva import utils
 from quart import Response, jsonify, request
 from validators import ip_address
 
+from backend.utils import calculate_seconds_from_time_string
 from backend.factory import daemon, daemon_legacy
 
 from . import daemon_bp
@@ -292,14 +292,14 @@ async def _daemon_set_bans() -> tuple[Response, int]:
     if ban.lower() not in ["true", "false"]:
         return jsonify({"status": "error", "error": "Invalid ban status"}), 400
 
-    if utils.calculate_seconds_from_time_string(time) == 0:
+    if calculate_seconds_from_time_string(time) == 0:
         return jsonify({"status": "error", "error": "Invalid time"}), 400
 
     ban_status: bool = True if ban == "true" else False
-    seconds: int = utils.calculate_seconds_from_time_string(time)
+    seconds: int = calculate_seconds_from_time_string(time)
 
     data = await daemon.set_bans(
-        [{"host": host, "ban": ban_status, "seconds": seconds}]
+        bans=[{"host": host, "ban": ban_status, "seconds": seconds}]
     )
 
     if "error" in data:

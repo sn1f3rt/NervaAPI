@@ -5,13 +5,13 @@ from logging.config import dictConfig
 import aiohttp
 import schedule
 import motor.motor_asyncio
+from nerva import DaemonRPC, DaemonHTTP
 from quart import Quart, Response, jsonify
 from quart_cors import cors
-from nerva.daemon import Daemon, DaemonLegacy
 from quart_rate_limiter import limit_blueprint
 
-daemon: Daemon
-daemon_legacy: DaemonLegacy
+daemon: DaemonRPC
+daemon_legacy: DaemonHTTP
 
 db: motor.motor_asyncio.AsyncIOMotorDatabase
 
@@ -71,12 +71,12 @@ def create_app() -> Quart:
     prune_url = app.config["INTERNAL_PRUNE_URL"]
 
     global daemon, daemon_legacy
-    daemon = Daemon(
+    daemon = DaemonRPC(
         host=app.config["DAEMON_RPC_HOST"],
         port=app.config["DAEMON_RPC_PORT"],
         ssl=app.config["DAEMON_RPC_SSL"],
     )
-    daemon_legacy = DaemonLegacy(
+    daemon_legacy = DaemonHTTP(
         host=app.config["DAEMON_RPC_HOST"],
         port=app.config["DAEMON_RPC_PORT"],
         ssl=app.config["DAEMON_RPC_SSL"],
