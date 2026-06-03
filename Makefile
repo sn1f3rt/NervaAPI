@@ -34,7 +34,7 @@ frontend-build:
 	npm run build
 
 frontend-typecheck:
-	npm run typecheck
+	npm run typecheck:frontend
 
 clean:
 	rm -f logs/*.log

@@ -2,7 +2,7 @@
 
 [![Lint](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml)
 [![Type Check](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml)
-[![Frontend](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/frontend.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/frontend.yml)
+[![Build](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/build.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/build.yml)
 
 ## Table of Contents
 
