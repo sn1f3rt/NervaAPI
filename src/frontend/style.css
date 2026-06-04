@@ -9,6 +9,7 @@
 
 /* ----------------------------------------------------------- design tokens */
 :root {
+  color-scheme: dark;
   --bg: #0a0d14;
   --bg-2: #0c1018;
   --surface: #10141d;
@@ -58,6 +59,7 @@
 }
 
 [data-theme="light"] {
+  color-scheme: light;
   --bg: #f5f8fd;
   --bg-2: #eef3fa;
   --surface: #ffffff;
@@ -152,6 +154,29 @@ code { font-family: var(--font-mono); }
 *::-webkit-scrollbar { width: 9px; height: 9px; }
 *::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 20px; }
 *::-webkit-scrollbar-track { background: transparent; }
+
+/* keyboard focus rings (only for keyboard users, not mouse clicks) */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.search input:focus-visible { outline: none; }
+main.content:focus { outline: none; }
+
+/* skip-to-content link — visible only when focused via keyboard */
+.skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 80;
+  transform: translateY(-160%);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease;
+}
+.skip:focus { transform: none; text-decoration: none; }
 
 /* ---------------------------------------------------------------- sidebar */
 .sidebar {
@@ -709,13 +734,6 @@ table.codes td { color: var(--text-dim); }
   background: var(--surface-2);
   border-bottom: 1px solid var(--border);
 }
-.code__dot {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
 .code__title {
   font-family: var(--font-mono);
   font-size: 11.5px;
@@ -913,4 +931,25 @@ table.codes td { color: var(--text-dim); }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .to-top { transition: none; }
+}
+
+/* ----------------------------------------------------------------- print */
+@media print {
+  :root {
+    color-scheme: light;
+    --bg: #ffffff; --bg-2: #ffffff;
+    --surface: #ffffff; --surface-2: #f3f6fb; --surface-3: #eef3fa;
+    --border: #d4dded; --border-2: #c2cee0;
+    --text: #0f141d; --text-dim: #3a4658; --text-faint: #6a7689;
+    --shadow: none; --shadow-sm: none;
+  }
+  body::before,
+  body::after { display: none; }
+  .sidebar, .topbar, .progress, .backdrop, .to-top, .menu-toggle, .skip { display: none !important; }
+  .shell, .footer { margin-left: 0; }
+  .content { max-width: none; margin: 0; padding: 0; }
+  .endpoint { grid-template-columns: 1fr; gap: 14px; padding: 18px 0; page-break-inside: avoid; }
+  .codecol { position: static; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .code, .fact, .table-wrap, .callout { box-shadow: none; }
 }

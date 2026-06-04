@@ -4,6 +4,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <script>
+        // Apply the saved (or OS-preferred) theme before first paint to avoid a flash.
+        (function () {
+            try {
+                var s = localStorage.getItem("nerva-api-theme");
+                var t = s === "light" || s === "dark"
+                    ? s
+                    : window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+                        ? "light"
+                        : "dark";
+                document.documentElement.setAttribute("data-theme", t);
+            } catch (e) { }
+        })();
+    </script>
     <link rel="icon" type="image/png" href="/nerva.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,6 +27,20 @@
     <title>NervaAPI · Documentation</title>
     <meta name="description"
         content="Documentation for the Nerva (XNV) Public API — a REST interface to the Nerva blockchain daemon, market data and node analytics." />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0d14" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f8fd" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NervaAPI" />
+    <meta property="og:title" content="NervaAPI · Documentation" />
+    <meta property="og:description"
+        content="REST interface to the Nerva (XNV) blockchain daemon, market data and node analytics — plain HTTP, JSON responses, no keys." />
+    <meta property="og:url" content="https://api-next.nerva.one/" />
+    <meta property="og:image" content="https://api-next.nerva.one/nerva.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="NervaAPI · Documentation" />
+    <meta name="twitter:description"
+        content="REST interface to the Nerva (XNV) blockchain daemon, market data and node analytics — plain HTTP, JSON responses, no keys." />
+    <meta name="twitter:image" content="https://api-next.nerva.one/nerva.png" />
 </head>
 
 <body>

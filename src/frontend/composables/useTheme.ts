@@ -2,7 +2,7 @@ import { ref } from "vue"
 
 export type Theme = "dark" | "light"
 
-const THEME_KEY = "nerva-theme"
+const THEME_KEY = "nerva-api-theme"
 
 function read(): Theme {
   try {

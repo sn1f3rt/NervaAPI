@@ -31,6 +31,7 @@ function scrollTop(): void {
 </script>
 
 <template>
+  <a class="skip" href="#content">Skip to content</a>
   <div class="progress" :style="{ transform: `scaleX(${progress})` }" />
   <div class="backdrop" @click="closeNav" />
 
@@ -39,7 +40,7 @@ function scrollTop(): void {
   <div class="shell">
     <TheTopbar @toggle-nav="navOpen = !navOpen" />
 
-    <main class="content">
+    <main id="content" class="content" tabindex="-1">
       <HeroSection />
       <ConventionsSection />
       <RateLimitSection />
