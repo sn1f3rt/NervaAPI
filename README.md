@@ -1,8 +1,8 @@
 # NervaAPI
 
-[![Lint](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/lint.yml)
-[![Type Check](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/typecheck.yml)
-[![Build](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/build.yml/badge.svg)](https://github.com/Sn1F3rt/NervaAPI/actions/workflows/build.yml)
+[![Lint](https://github.com/sn1f3rt/NervaAPI/actions/workflows/lint.yml/badge.svg)](https://github.com/sn1f3rt/NervaAPI/actions/workflows/lint.yml)
+[![Type Check](https://github.com/sn1f3rt/NervaAPI/actions/workflows/typecheck.yml/badge.svg)](https://github.com/sn1f3rt/NervaAPI/actions/workflows/typecheck.yml)
+[![Build](https://github.com/sn1f3rt/NervaAPI/actions/workflows/build.yml/badge.svg)](https://github.com/sn1f3rt/NervaAPI/actions/workflows/build.yml)
 
 ## Table of Contents
 
@@ -35,7 +35,7 @@ The repository is a monorepo: the Quart API lives in [`src/backend`](src/backend
 1. Clone the repository
 
    ```shell
-    git clone https://github.com/Sn1F3rt/NervaAPI.git
+    git clone https://github.com/sn1f3rt/NervaAPI.git
    ```
    
 2. Switch to the project directory
@@ -129,7 +129,7 @@ MongoDB (Atlas) and the Nerva daemon are external, so they are configured, not c
    cp src/backend/config.example.py src/backend/config.py
    ```
 
-   Set `MONGODB_URI` (your Atlas URI), `DAEMON_RPC_HOST`/`DAEMON_RPC_PORT` (your remote daemon), `CORS_ALLOW_ORIGIN` and `DOCS_URL`.
+   Set `MONGODB_URI` (your Atlas URI), `DAEMON_RPC_HOST`/`DAEMON_RPC_PORT` (your remote daemon) and `CORS_ALLOW_ORIGIN`.
 
 2. Build and start (detached):
 

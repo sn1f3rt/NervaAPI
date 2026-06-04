@@ -26,7 +26,7 @@ const { toggle } = useTheme()
 
     <span class="topbar__spacer" />
 
-    <a class="iconbtn" href="https://github.com/Sn1F3rt/NervaAPI" target="_blank" rel="noopener"
+    <a class="iconbtn" href="https://github.com/sn1f3rt/NervaAPI" target="_blank" rel="noopener"
       aria-label="GitHub repository">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <path
