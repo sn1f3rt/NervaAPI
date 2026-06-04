@@ -138,13 +138,22 @@ The site is then reachable at `http://127.0.0.1:17568`: the docs at `/`, the API
 
 ### Behind HestiaCP
 
-Point the domain's proxy at the stack over plain HTTP (TLS stays at HestiaCP's edge — no certificates are needed inside the stack). Using a custom web template, set:
+Ready-made web templates are provided in [`docker/hestia`](docker/hestia). They proxy the domain to the stack over plain HTTP (TLS stays at HestiaCP's edge — no certificates are needed inside the stack) and forward the real client IP, which the API needs for rate limiting and analytics.
 
-```nginx
-location / {
-    proxy_pass http://127.0.0.1:17568;
-}
-```
+1. Copy them into HestiaCP's nginx web template directory:
+
+   ```shell
+   cp docker/hestia/nerva_api.tpl docker/hestia/nerva_api.stpl /usr/local/hestia/data/templates/web/nginx/
+   ```
+
+2. For the domain, set the **Web Template** to `nerva_api` and enable **SSL** (Let's Encrypt).
+
+3. Rebuild the domain and reload nginx:
+
+   ```shell
+   v-rebuild-web-domain <user> <domain>
+   nginx -t && systemctl reload nginx
+   ```
 
 ## Funding
 
