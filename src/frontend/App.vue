@@ -7,6 +7,7 @@ import HeroSection from "./components/HeroSection.vue"
 import RateLimitSection from "./components/RateLimitSection.vue"
 import ReferenceSection from "./components/ReferenceSection.vue"
 import StatusCodesSection from "./components/StatusCodesSection.vue"
+import SupportModal from "./components/SupportModal.vue"
 import TheFooter from "./components/TheFooter.vue"
 import TheTopbar from "./components/TheTopbar.vue"
 import { useScrollProgress } from "./composables/useScrollProgress"
@@ -16,6 +17,7 @@ import { API_SPEC } from "./data/api-spec"
 const { activeId } = useScrollSpy()
 const { progress, showTop } = useScrollProgress()
 const navOpen = ref(false)
+const supportOpen = ref(false)
 
 watch(navOpen, (open) => {
   document.body.classList.toggle("nav-open", open)
@@ -38,7 +40,7 @@ function scrollTop(): void {
   <AppSidebar :active-id="activeId" @navigate="closeNav" />
 
   <div class="shell">
-    <TheTopbar @toggle-nav="navOpen = !navOpen" />
+    <TheTopbar @toggle-nav="navOpen = !navOpen" @open-support="supportOpen = true" />
 
     <main id="content" class="content" tabindex="-1">
       <HeroSection />
@@ -54,6 +56,8 @@ function scrollTop(): void {
 
     <TheFooter />
   </div>
+
+  <SupportModal :open="supportOpen" @close="supportOpen = false" />
 
   <Transition name="fade">
     <button v-if="showTop" class="to-top" type="button" aria-label="Back to top" @click="scrollTop">
