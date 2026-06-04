@@ -13,6 +13,7 @@
 - [Running](#running)
 - [Documentation](#documentation)
 - [Deployment](#deployment)
+- [Funding](#funding)
 - [License](#license)
 
 ## About
@@ -150,6 +151,17 @@ location / {
     proxy_pass http://127.0.0.1:17568;
 }
 ```
+
+## Funding
+
+NervaAPI is free and public, but its development and hosting are not. If you find it useful, please consider supporting its upkeep:
+
+- **Nerva (XNV):** `NV1PqtQwRik7FFeAJ5n7iKbHtve3nkeM99x3Q31wjBAm7twvRv6NYkbbP7vSG3n8N3fsUh2gpfZG2PRi4gYhxL4h2r2SnhUoX`
+- **Monero (XMR):** `48SSQzEcvQPK7H69vUvwReFT7tCDESdRhPFGubTgJ8WeXUUPQRWjY8oZk3wHfLhsUnChJ1BYyYfoLKQh8epYsupAAWCnDKh`
+- **Bitcoin (BTC):** `bc1qzg4jjtxq6cg22pmlaesyva64nrjzcaqud968vf`
+- **Ethereum (ETH):** `0x97173e82df1d9Cc76946241D63A9f9231Dea1566`
+
+Prefer fiat? You can also support via [GitHub Sponsors](https://github.com/sponsors/sn1f3rt), [Patreon](https://www.patreon.com/sn1f3rt), or [Buy Me a Coffee](https://www.buymeacoffee.com/sn1f3rt).
 
 ## License
 
