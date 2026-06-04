@@ -568,7 +568,7 @@ main.content:focus { outline: none; }
 .table-wrap {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow-x: auto;
   margin: 16px 0;
 }
 table.codes { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -826,6 +826,9 @@ table.codes td { color: var(--text-dim); }
   transition: opacity 0.2s;
 }
 
+/* lock background scroll while the mobile nav drawer is open */
+body.nav-open { overflow: hidden; }
+
 /* ------------------------------------------------------------- load anim */
 @keyframes rise {
   from { opacity: 0; transform: translateY(10px); }
@@ -857,6 +860,13 @@ table.codes td { color: var(--text-dim); }
   .shell, .footer { margin-left: 0; }
   .menu-toggle { display: inline-flex; }
   .topbar__base .host { max-width: 38vw; }
+}
+
+/* roomier touch targets on touch / coarse-pointer devices */
+@media (pointer: coarse) {
+  .nav__link { min-height: 44px; }
+  .nav__grouphead { min-height: 40px; }
+  .copy { padding-top: 7px; padding-bottom: 7px; }
 }
 
 /* ----------------------------------------------------- Vue UI enhancements */
