@@ -77,13 +77,7 @@ The API server will be running at `http://127.0.0.1:8080`, reloading on changes.
 uv run hypercorn --bind 0.0.0.0:17568 backend.launcher:app # or make run-prod
 ```
 
-or if you want to enable SSL support
-
-```shell
-uv run hypercorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:17568 backend.launcher:app # or make run-prod-ssl
-```
-
-The API server will be running at `http://localhost:17568`. The certificate and key files are required for SSL support.
+The API server will be running at `http://localhost:17568`. TLS is terminated by the reverse proxy in front of the app (see [Deployment](#deployment)).
 
 ## Documentation
 
@@ -92,13 +86,13 @@ The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`]
 1. Install the Node dependencies
 
    ```shell
-   npm install # or make frontend-install
+   npm install
    ```
 
 2. Start the dev server — runs on `http://127.0.0.1:3000` and proxies `/v1` to the backend on `:8080`
 
    ```shell
-   npm run dev # or make frontend-dev
+   npm run dev
    ```
 
    To bring up the whole stack at once — the backend on `:8080` and the docs on `:3000` — run:
@@ -110,7 +104,7 @@ The documentation site is a Vue 3 + Tailwind CSS app located in [`src/frontend`]
 3. Build the static site for production (outputs to `dist/`)
 
    ```shell
-   npm run build # or make frontend-build
+   npm run build
    ```
 
 In production, nginx serves the built `dist/` and reverse-proxies `/v1` to the API — see [Deployment](#deployment).

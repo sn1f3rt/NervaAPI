@@ -14,9 +14,6 @@ run-dev:
 run-prod:
 	uv run hypercorn --bind 0.0.0.0:17568 backend.launcher:app
 
-run-prod-ssl:
-	uv run hypercorn --bind 0.0.0.0:17568 --certfile cert.pem --keyfile key.pem backend.launcher:app
-
 lint:
 	uv run ruff check --fix .
 	uv run ruff format .
@@ -24,20 +21,8 @@ lint:
 typecheck:
 	uv run mypy src/backend
 
-frontend-install:
-	npm ci
-
-frontend-dev:
-	npm run dev
-
-frontend-build:
-	npm run build
-
-frontend-typecheck:
-	npm run typecheck:frontend
-
 clean:
 	rm -f logs/*.log
 
-.PHONY: install install-dev install-prod run run-dev run-prod run-prod-ssl lint typecheck frontend-install frontend-dev frontend-build frontend-typecheck clean
+.PHONY: install install-dev install-prod run run-dev run-prod lint typecheck clean
 .DEFAULT_GOAL := run
