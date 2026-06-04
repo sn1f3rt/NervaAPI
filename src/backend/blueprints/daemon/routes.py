@@ -162,13 +162,27 @@ async def _daemon_get_block_headers_range() -> tuple[Response, int]:
         )
 
     try:
-        data: dict[str, Any] = await daemon.get_block_headers_range(
-            start_height=int(start_height),
-            end_height=int(end_height),
-        )
+        start: int = int(start_height)
+        end: int = int(end_height)
 
     except (TypeError, ValueError):
         return jsonify({"status": "error", "error": "Invalid block height"}), 400
+
+    if end < start or end - start >= 1000:
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "error": "Invalid range (must be ascending and span fewer than 1000 blocks)",
+                }
+            ),
+            400,
+        )
+
+    data: dict[str, Any] = await daemon.get_block_headers_range(
+        start_height=start,
+        end_height=end,
+    )
 
     if "error" in data:
         return jsonify({"status": "error", "error": data["error"]}), 400
@@ -304,6 +318,17 @@ async def _daemon_get_transactions() -> tuple[Response, int]:
                 {
                     "status": "error",
                     "error": "You must provide a list of transaction hashes",
+                }
+            ),
+            400,
+        )
+
+    if len(hashes) > 100:
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "error": "Too many transaction hashes (max 100)",
                 }
             ),
             400,
