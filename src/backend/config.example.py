@@ -33,6 +33,8 @@ The DAEMON_RPC_SSL is a boolean flag that determines whether to use SSL for the 
 
 By default, the Nerva daemon RPC interface is not encrypted, so DAEMON_RPC_SSL should be set to False.
 If you are running the daemon on a remote server, you may want to set DAEMON_RPC_HOST to the IP address of the server.
+When running the Docker stack with the daemon on the same host, set DAEMON_RPC_HOST to "host.docker.internal"
+(the api service maps it to the host gateway).
 """
 
 DAEMON_RPC_HOST = "localhost"

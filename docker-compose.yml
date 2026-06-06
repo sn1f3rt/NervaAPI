@@ -4,6 +4,11 @@ services:
       context: .
       target: api
     restart: unless-stopped
+    # Reach a Nerva daemon running on the host (e.g. its private full RPC on
+    # :17567) via host.docker.internal. Inert if the daemon is remote — then
+    # just point DAEMON_RPC_HOST at that host instead.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./src/backend/config.py:/app/src/backend/config.py:ro
       - api-logs:/app/logs

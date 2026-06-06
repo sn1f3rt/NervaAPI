@@ -124,7 +124,7 @@ MongoDB (Atlas) and the Nerva daemon are external, so they are configured, not c
    cp src/backend/config.example.py src/backend/config.py
    ```
 
-   Set `MONGODB_URI` (your Atlas URI), `DAEMON_RPC_HOST`/`DAEMON_RPC_PORT` (your remote daemon) and `CORS_ALLOW_ORIGIN`.
+   Set `MONGODB_URI` (your Atlas URI), `DAEMON_RPC_HOST`/`DAEMON_RPC_PORT` and `CORS_ALLOW_ORIGIN`. If the daemon runs on the **same host** as the stack, use `DAEMON_RPC_HOST = "host.docker.internal"` — the `api` service is preconfigured (`extra_hosts: host-gateway`) to reach the host; for a remote daemon, point it at that server's address. Either way, the host firewall must allow the connection — if you closed the daemon's RPC port to the public, make sure the Docker bridge subnet (e.g. `172.16.0.0/12`) can still reach it.
 
 2. Build and start (detached):
 
