@@ -23,15 +23,23 @@ def _fmt_native(value: float, symbol: str, precision: int = 8) -> str:
 
 
 async def _fetch_nonkyc() -> dict[str, Any]:
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://api.nonkyc.io/api/v2/market/getlist") as res:
-            data = await res.json()
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://api.nonkyc.io/api/v2/market/getlist"
+            ) as res:
+                if res.status != 200:
+                    return {}
+                data = await res.json()
 
-    return {
-        m["symbol"].replace("/", "-"): m
-        for m in data
-        if m.get("isActive") and not m.get("apiExcluded")
-    }
+        return {
+            m["symbol"].replace("/", "-"): m
+            for m in data
+            if m.get("isActive") and not m.get("apiExcluded")
+        }
+
+    except (aiohttp.ClientError, KeyError, TypeError):
+        return {}
 
 
 @market_bp.route("/market/nonkyc")
@@ -94,13 +102,19 @@ async def _market_nonkyc() -> tuple[Response, int]:
 
 
 async def _fetch_cexswap() -> dict[str, Any]:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            "https://cexswap.cc/api/public/markets/summary"
-        ) as res:
-            payload = await res.json()
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://cexswap.cc/api/public/markets/summary"
+            ) as res:
+                if res.status != 200:
+                    return {}
+                payload = await res.json()
 
-    return {m["pair"]: m for m in payload.get("items", [])}
+        return {m["pair"]: m for m in payload.get("items", [])}
+
+    except (aiohttp.ClientError, KeyError, TypeError):
+        return {}
 
 
 @market_bp.route("/market/cexswap")
@@ -156,11 +170,17 @@ async def _market_cexswap() -> tuple[Response, int]:
 
 
 async def _fetch_noirtrade() -> dict[str, Any]:
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://noirtrade.com/api/v1/tickers") as res:
-            data = await res.json()
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://noirtrade.com/api/v1/tickers") as res:
+                if res.status != 200:
+                    return {}
+                data = await res.json()
 
-    return {t["ticker_id"]: t for t in data}
+        return {t["ticker_id"]: t for t in data}
+
+    except (aiohttp.ClientError, KeyError, TypeError):
+        return {}
 
 
 @market_bp.route("/market/noirtrade")
@@ -221,15 +241,21 @@ async def _market_noirtrade() -> tuple[Response, int]:
 
 
 async def _fetch_klingex() -> dict[str, Any]:
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://api.klingex.io/api/markets") as res:
-            data = await res.json()
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://api.klingex.io/api/markets") as res:
+                if res.status != 200:
+                    return {}
+                data = await res.json()
 
-    return {
-        f"{m['base_asset_symbol']}-{m['quote_asset_symbol']}": m
-        for m in data
-        if m.get("is_active")
-    }
+        return {
+            f"{m['base_asset_symbol']}-{m['quote_asset_symbol']}": m
+            for m in data
+            if m.get("is_active")
+        }
+
+    except (aiohttp.ClientError, KeyError, TypeError):
+        return {}
 
 
 @market_bp.route("/market/klingex")

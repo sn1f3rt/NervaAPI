@@ -2,4 +2,4 @@ from quart import Blueprint
 
 market_bp: Blueprint = Blueprint("market", __name__)
 
-from . import routes
+from . import routes  # noqa: E402, F401

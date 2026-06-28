@@ -1,5 +1,6 @@
 from typing import Any
 
+import sys
 import asyncio
 from datetime import timedelta
 from logging.config import dictConfig
@@ -8,8 +9,11 @@ import schedule
 import motor.motor_asyncio
 from nerva import DaemonRPC, DaemonHTTP
 from quart import Quart, Response, jsonify, request
+from redis import Redis
 from quart_cors import cors
+from redis.exceptions import RedisError
 from quart_rate_limiter import RateLimiter, limit_blueprint
+from quart_rate_limiter.redis_store import RedisStore
 
 daemon: DaemonRPC
 daemon_legacy: DaemonHTTP
@@ -75,7 +79,22 @@ def create_app() -> Quart:
 
     app = cors(app, allow_origin=app.config["CORS_ALLOW_ORIGIN"])
 
-    RateLimiter(app, key_function=_rate_limit_key)
+    # Fail fast if the rate-limiter's Redis backend is unreachable, rather than
+    # erroring on every request once the app is serving.
+    try:
+        with Redis.from_url(app.config["REDIS_URL"]) as probe:
+            probe.ping()
+    except (RedisError, TimeoutError):
+        print("Failed to connect to Redis. Exiting...")
+        sys.exit(1)
+
+    # Back the rate limiter with Redis so limits survive restarts and are shared
+    # across workers (the in-process MemoryStore default does neither).
+    RateLimiter(
+        app,
+        key_function=_rate_limit_key,
+        store=RedisStore(app.config["REDIS_URL"]),
+    )
 
     global analytics_enabled
     analytics_enabled = app.config["ANALYTICS_ENABLED"]

@@ -86,6 +86,22 @@ Set it to your public origin in production, or "*" to allow any origin.
 
 CORS_ALLOW_ORIGIN = "*"
 
+# Redis
+"""
+REDIS_URL is the connection string for the Redis (or Valkey) instance that backs
+the rate limiter, so limits survive restarts and are shared across workers.
+
+When running the Docker stack, point it at the bundled "redis" service:
+
+    REDIS_URL = "redis://redis:6379/0"
+
+For local development, run Redis/Valkey locally and use:
+
+    REDIS_URL = "redis://localhost:6379/0"
+"""
+
+REDIS_URL = "redis://localhost:6379/0"
+
 # Rate limiting
 """
 RATE_LIMIT_COUNT requests are allowed per RATE_LIMIT_PERIOD seconds, per client

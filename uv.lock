@@ -948,6 +948,7 @@ dependencies = [
     { name = "quart" },
     { name = "quart-cors" },
     { name = "quart-rate-limiter" },
+    { name = "redis" },
     { name = "schedule" },
 ]
 
@@ -971,6 +972,7 @@ requires-dist = [
     { name = "quart", specifier = "==0.20.0" },
     { name = "quart-cors", specifier = "==0.8.0" },
     { name = "quart-rate-limiter", specifier = "==0.10.0" },
+    { name = "redis", specifier = "==7.4.0" },
     { name = "schedule", specifier = "==1.2.2" },
     { name = "uvloop", marker = "extra == 'speed'", specifier = "==0.22.1" },
 ]
@@ -1303,6 +1305,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/81/d9/c6e98db7fdf9ff31ecd8da889a58ece0d214cb12ee1b41751b751b3201e2/quart_rate_limiter-0.10.0.tar.gz", hash = "sha256:87e538e50b4a0e8c3fc2d72e0c7bd4f0de193f041d70e9deb18128730e9a3e5b", size = 7112, upload-time = "2024-05-19T09:41:16.45Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/41/310850a9e1940f8c014602647d929985eb88a09f15fffabef021f81a06b1/quart_rate_limiter-0.10.0-py3-none-any.whl", hash = "sha256:dcc9b429b856550744dd014f6f02f6d9e6b01b39b1a2092bec2fc4bbd408f902", size = 7966, upload-time = "2024-05-19T09:41:14.895Z" },
+]
+
+[[package]]
+name = "redis"
+version = "7.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "async-timeout", marker = "python_full_version < '3.11.3'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7b/7f/3759b1d0d72b7c92f0d70ffd9dc962b7b7b5ee74e135f9d7d8ab06b8a318/redis-7.4.0.tar.gz", hash = "sha256:64a6ea7bf567ad43c964d2c30d82853f8df927c5c9017766c55a1d1ed95d18ad", size = 4943913, upload-time = "2026-03-24T09:14:37.53Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/74/3a/95deec7db1eb53979973ebd156f3369a72732208d1391cd2e5d127062a32/redis-7.4.0-py3-none-any.whl", hash = "sha256:a9c74a5c893a5ef8455a5adb793a31bb70feb821c86eccb62eebef5a19c429ec", size = 409772, upload-time = "2026-03-24T09:14:35.968Z" },
 ]
 
 [[package]]

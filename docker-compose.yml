@@ -4,6 +4,9 @@ services:
       context: .
       target: api
     restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
     # Reach a Nerva daemon running on the host (e.g. its private full RPC on
     # :17567) via host.docker.internal. Inert if the daemon is remote — then
     # just point DAEMON_RPC_HOST at that host instead.
@@ -25,5 +28,20 @@ services:
     ports:
       - "127.0.0.1:17568:80"
 
+  redis:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+    # Persist the rate-limit counters so they survive a stack restart.
+    command: ["valkey-server", "--save", "60", "1", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - redis-data:/data
+
 volumes:
   api-logs:
+  redis-data:
