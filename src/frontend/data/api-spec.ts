@@ -762,28 +762,6 @@ export const API_SPEC: ApiSpec = {
             },
           },
         },
-        {
-          id: "market-klingex",
-          method: "GET",
-          path: "/market/klingex",
-          summary: "Ticker data from KlingEx.",
-          description:
-            "Returns last price, volume and 24h change for each configured pair on <a href=\"https://klingex.io\" target=\"_blank\" rel=\"noopener\">KlingEx</a>.",
-          params: [],
-          sample: {},
-          response: {
-            status: "success",
-            exchange: "KlingEx",
-            pairs: ["XNV-USDT"],
-            result: {
-              "XNV-USDT": {
-                last_price: "$0.0123",
-                volume: "1689.2521",
-                change_24h_pct: "1.87%",
-              },
-            },
-          },
-        },
       ],
     },
 
