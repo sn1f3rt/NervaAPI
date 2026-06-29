@@ -1,12 +1,13 @@
+<script setup lang="ts">
+import SectionHead from "./ui/SectionHead.vue"
+</script>
+
 <template>
-  <section class="section" id="status-codes" data-spy>
-    <div class="section__head">
-      <div class="section__kicker">Conventions</div>
-      <h2>Status codes</h2>
-      <p class="section__summary">Standard HTTP status codes are used throughout.</p>
-    </div>
-    <div class="table-wrap">
-      <table class="codes">
+  <section class="pt-[30px]" id="status-codes" data-spy>
+    <SectionHead kicker="Conventions" title="Status codes">Standard HTTP status codes are used throughout.</SectionHead>
+    <div class="my-4 overflow-x-auto rounded-card border border-border">
+      <table
+        class="w-full border-collapse text-[14px] [&_th]:border-b [&_th]:border-border [&_th]:bg-surface-2 [&_th]:px-[16px] [&_th]:py-[10px] [&_th]:text-left [&_th]:font-[family-name:var(--font-mono)] [&_th]:text-[11px] [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-[0.12em] [&_th]:text-muted [&_td]:border-b [&_td]:border-border [&_td]:px-[16px] [&_td]:py-[10px] [&_td]:text-left [&_td]:text-text-dim [&_td:first-child]:font-[family-name:var(--font-mono)] [&_td:first-child]:w-[90px] [&_tr:last-child_td]:border-b-0">
         <thead>
           <tr>
             <th>Code</th>

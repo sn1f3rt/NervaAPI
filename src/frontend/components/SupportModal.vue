@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { nextTick, onUnmounted, ref, watch } from "vue"
+import BaseModal from "./ui/BaseModal.vue"
+import CopyField from "./ui/CopyField.vue"
 
-const props = defineProps<{ open: boolean }>()
-const emit = defineEmits<{ (e: "close"): void }>()
+defineProps<{ open: boolean }>()
+defineEmits<{ (e: "close"): void }>()
 
 interface Coin {
   label: string
@@ -40,85 +41,30 @@ const fiat = [
   { label: "Patreon", url: "https://www.patreon.com/sn1f3rt" },
   { label: "Buy Me a Coffee", url: "https://www.buymeacoffee.com/sn1f3rt" },
 ]
-
-const copied = ref("")
-const closeEl = ref<HTMLButtonElement | null>(null)
-let timer: number | undefined
-
-async function copy(c: Coin): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(c.address)
-    copied.value = c.ticker
-    clearTimeout(timer)
-    timer = window.setTimeout(() => (copied.value = ""), 1600)
-  } catch {
-    /* ignore */
-  }
-}
-
-function onKey(e: KeyboardEvent): void {
-  if (e.key === "Escape") emit("close")
-}
-
-watch(
-  () => props.open,
-  async (o) => {
-    document.body.classList.toggle("modal-open", o)
-    if (o) {
-      window.addEventListener("keydown", onKey)
-      await nextTick()
-      closeEl.value?.focus()
-    } else {
-      window.removeEventListener("keydown", onKey)
-    }
-  },
-)
-
-onUnmounted(() => window.removeEventListener("keydown", onKey))
 </script>
 
 <template>
-  <Teleport to="body">
-    <Transition name="modal">
-      <div
-        v-if="open"
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="support-title"
-        @click.self="$emit('close')"
-      >
-        <div class="modal__panel">
-          <button ref="closeEl" class="modal__close" type="button" aria-label="Close"
-            @click="$emit('close')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+  <BaseModal :open="open" @close="$emit('close')">
+    <template #title>Support <b class="grad">Nerva</b>API</template>
 
-          <h2 id="support-title" class="modal__title">Support <b>Nerva</b>API</h2>
-          <p class="modal__lead">
-            NervaAPI is free and public, but its development and hosting are not. If you find it
-            useful, please consider chipping in. Tap an address to copy it.
-          </p>
+    <p class="mb-[18px] text-[14px] text-text-dim">
+      NervaAPI is free and public, but its development and hosting are not. If you find it
+      useful, please consider chipping in. Tap an address to copy it.
+    </p>
 
-          <div class="donate">
-            <button v-for="c in coins" :key="c.ticker" class="donate__row" type="button"
-              @click="copy(c)">
-              <span class="donate__coin">{{ c.label }} <span class="donate__tick">{{ c.ticker }}</span></span>
-              <span class="donate__addr">{{ c.address }}</span>
-              <span class="donate__copy" :class="{ copied: copied === c.ticker }">{{ copied === c.ticker ? "Copied" : "Copy" }}</span>
-            </button>
-          </div>
-
-          <div class="donate__fiat">
-            <span class="donate__fiatlabel">Prefer fiat?</span>
-            <a v-for="f in fiat" :key="f.url" :href="f.url" target="_blank" rel="noopener">{{ f.label }}</a>
-          </div>
-        </div>
+    <div class="flex flex-col gap-3.5">
+      <div v-for="c in coins" :key="c.ticker" class="flex flex-col gap-1.5">
+        <span class="text-[13px] font-semibold text-text"
+          >{{ c.label }}
+          <span class="font-[family-name:var(--font-mono)] text-[10px] text-muted">{{ c.ticker }}</span></span
+        >
+        <CopyField :value="c.address" wrap />
       </div>
-    </Transition>
-  </Teleport>
+    </div>
+
+    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] text-text-dim">
+      <span class="text-muted">Prefer fiat?</span>
+      <a v-for="f in fiat" :key="f.url" :href="f.url" target="_blank" rel="noopener">{{ f.label }}</a>
+    </div>
+  </BaseModal>
 </template>

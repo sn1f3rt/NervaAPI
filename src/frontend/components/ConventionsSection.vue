@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { highlightJson, prettyJson } from "../lib/highlight"
 import CodeBlock from "./CodeBlock.vue"
+import SectionHead from "./ui/SectionHead.vue"
 
 const success = { status: "success", result: { count: 3215467, status: "OK" } }
 const error = {
@@ -18,18 +19,14 @@ const errorTitle = '<b>Error</b> &middot; <span style="color:var(--err)">400</sp
 </script>
 
 <template>
-  <section class="section" id="conventions" data-spy>
-    <div class="section__head">
-      <div class="section__kicker">Conventions</div>
-      <h2>Response format</h2>
-      <p class="section__summary">
-        Every endpoint responds with JSON. Successful responses wrap their payload in a
-        <code>status</code> + <code>result</code> envelope.
-      </p>
-    </div>
+  <section class="pt-[30px]" id="conventions" data-spy>
+    <SectionHead kicker="Conventions" title="Response format">
+      Every endpoint responds with JSON. Successful responses wrap their payload in a
+      <code>status</code> + <code>result</code> envelope.
+    </SectionHead>
 
-    <div class="endpoint" style="border-top: 0; padding-top: 18px">
-      <div class="endpoint__doc prose">
+    <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-8 pt-[18px] max-[1080px]:grid-cols-1 max-[1080px]:gap-[18px]">
+      <div class="min-w-0 max-w-[74ch] text-text-dim [&_h3]:mt-[26px] [&_h3]:mb-2 [&_h3]:text-[17px] [&_h3]:font-semibold [&_h3]:text-text [&_p]:mb-3 [&_a]:font-medium">
         <h3>Success</h3>
         <p>
           On success, <code>status</code> is <code>"success"</code> and the payload lives under
@@ -43,7 +40,7 @@ const errorTitle = '<b>Error</b> &middot; <span style="color:var(--err)">400</sp
           message. Daemon and market endpoints use an <code>error</code> field; the analytics
           endpoints use <code>message</code>.
         </p>
-        <div class="callout">
+        <div class="mt-[18px] flex gap-3 rounded-field border border-border border-l-[3px] border-l-accent bg-surface px-[16px] py-[13px] text-[14px] text-text-dim [&_svg]:mt-[2px] [&_svg]:size-[17px] [&_svg]:flex-none [&_svg]:text-accent">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10" />
@@ -56,8 +53,8 @@ const errorTitle = '<b>Error</b> &middot; <span style="color:var(--err)">400</sp
           </div>
         </div>
       </div>
-      <div class="endpoint__code">
-        <div class="codecol">
+      <div class="min-w-0">
+        <div class="sticky top-[80px] flex flex-col gap-4 max-[1080px]:static">
           <CodeBlock kind="resp" :title-html="successTitle" :body-html="successHtml"
             :copy-text="successText" />
           <CodeBlock kind="resp" :title-html="errorTitle" :body-html="errorHtml"

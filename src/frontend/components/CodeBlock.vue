@@ -12,11 +12,15 @@ const { copied, copy } = useCopy()
 </script>
 
 <template>
-  <div class="code" :class="kind">
-    <div class="code__bar">
-      <span class="code__title" v-html="titleHtml" />
-      <span class="code__spacer" />
-      <button class="copy" :class="{ copied }" type="button" @click="copy(copyText)">
+  <div class="overflow-hidden rounded-card border border-border bg-surface shadow-[var(--shadow-popover)]">
+    <div class="flex items-center gap-[9px] border-b border-border bg-surface-2 py-[9px] pr-[12px] pl-[14px]">
+      <span class="mono text-[11.5px] text-text-dim [&_b]:font-semibold [&_b]:text-text" v-html="titleHtml" />
+      <span class="flex-1" />
+      <button type="button" @click="copy(copyText)"
+        class="mono inline-flex cursor-pointer items-center gap-[6px] rounded-[7px] border px-[9px] py-[4px] text-[11px] transition-[color,border-color,background] [@media(pointer:coarse)]:py-[7px] [&_svg]:size-[13px]"
+        :class="copied
+          ? 'text-ok border-[color-mix(in_srgb,var(--ok)_45%,var(--border))] bg-surface-3'
+          : 'text-text-dim border-border bg-surface-3 hover:text-text hover:border-border-2'">
         <svg v-if="!copied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -29,6 +33,8 @@ const { copied, copy } = useCopy()
         <span>{{ copied ? "Copied" : "Copy" }}</span>
       </button>
     </div>
-    <pre v-html="bodyHtml" />
+    <pre v-html="bodyHtml"
+      class="m-0 overflow-x-auto px-[16px] py-[15px] font-[family-name:var(--font-mono)] text-[12.8px] leading-[1.7] text-text"
+      :class="kind === 'req' ? 'whitespace-pre-wrap break-words' : ''" />
   </div>
 </template>
