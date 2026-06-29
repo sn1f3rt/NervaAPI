@@ -13,7 +13,7 @@ const { theme, toggle } = useTheme()
     class="sticky top-0 z-30 print:hidden flex items-center gap-[14px] h-[60px] px-[clamp(20px,4vw,52px)] border-b border-border bg-[color-mix(in_srgb,var(--bg)_78%,transparent)] backdrop-blur-[14px]"
   >
     <button
-      class="hidden max-[860px]:inline-flex items-center justify-center h-9 min-w-9 px-[10px] rounded-[9px] border border-border bg-surface text-text-dim cursor-pointer transition-colors hover:text-text hover:border-border-2 [&_svg]:size-4"
+      class="hidden max-[860px]:inline-flex items-center justify-center size-[38px] rounded-field border border-border bg-surface text-text-dim cursor-pointer hover:text-text hover:border-accent [&_svg]:size-[18px]"
       type="button" aria-label="Toggle navigation" @click="$emit('toggle-nav')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">

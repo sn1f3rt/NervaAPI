@@ -101,7 +101,7 @@ onUnmounted(() => {
         @click.self="close"
       >
         <div ref="panel"
-          class="relative max-h-[calc(100vh-40px)] w-[min(460px,100%)] overflow-y-auto rounded-card border border-border-2 bg-surface px-[24px] pt-[26px] pb-[22px] shadow-[var(--shadow)] after:absolute after:inset-x-0 after:top-0 after:h-[3px] after:rounded-t-card after:bg-[image:var(--grad)] after:content-['']">
+          class="relative max-h-[calc(100vh-40px)] w-full max-w-[540px] overflow-y-auto rounded-card border border-border-2 bg-surface px-[24px] pt-[26px] pb-[22px] shadow-[var(--shadow)] after:absolute after:inset-x-0 after:top-0 after:h-[3px] after:rounded-t-card after:bg-[image:var(--grad)] after:content-['']">
           <button ref="closeEl" type="button" aria-label="Close" @click="close"
             class="absolute right-[14px] top-[14px] inline-flex size-[32px] cursor-pointer items-center justify-center rounded-[8px] border border-border bg-surface-2 text-text-dim transition-[color,border-color] hover:border-border-2 hover:text-text [&_svg]:size-[15px]">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
