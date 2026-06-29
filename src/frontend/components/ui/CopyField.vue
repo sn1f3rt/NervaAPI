@@ -22,8 +22,8 @@ const { copied, copy } = useCopy()
     <button
       type="button"
       :aria-label="copied ? 'Copied' : 'Copy'"
-      class="shrink-0 inline-flex items-center justify-center size-[30px] rounded-field bg-transparent cursor-pointer hover:text-text hover:bg-surface"
-      :class="copied ? 'text-accent' : 'text-text-dim'"
+      class="shrink-0 inline-flex items-center justify-center size-[30px] rounded-field bg-transparent cursor-pointer hover:bg-surface"
+      :class="copied ? 'text-accent hover:text-accent' : 'text-text-dim hover:text-text'"
       @click="copy(value)"
     >
       <svg v-if="copied" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
