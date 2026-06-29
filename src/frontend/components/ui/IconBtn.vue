@@ -6,6 +6,6 @@ const cls =
 </script>
 
 <template>
-  <a v-if="href" :class="cls"><slot /></a>
+  <a v-if="href" :href="href" :class="cls"><slot /></a>
   <button v-else :class="cls" type="button"><slot /></button>
 </template>
